@@ -12,6 +12,9 @@ cozy anonymous whispers. 🐞
   - [ ] delete whisper/s (requires auth) `DELETE @ /api/whispers/:snowflake`
 - [x] limit payload to prevent spam
 - [ ] web frontend (literal hell)
+  - [x] basic skeleton
+  - [ ] actual functionality
+  - [ ] cleanup code somehow
 - [ ] implement ratelimit
 - [ ] github oauth to access private whispers `/api/auth/github`
 - [ ] dockerize
