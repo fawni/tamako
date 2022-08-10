@@ -1,0 +1,19 @@
+[package]
+name = "tamako"
+version = "0.1.0"
+authors = ["obscurity <z@x4.pm>"]
+license = "OSL-3.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.20", features = ["full"] }
+warp = "0.3"
+serde = {version = "1.0", features = ["derive"] }
+dotenvy = "0.15"
+mongodb = "2.3"
+futures = "0.3"
+chrono = "0.4"
+chrono-tz = "0.6"
+pretty_env_logger = "0.4"
+color-eyre = { version = "0.6", default-features = false }
+rs-snowflake = "0.6"

@@ -1,0 +1,51 @@
+.App {
+	text-align: center;
+	// <div class="bg-primary min-h-screen text-center font-iosevka selection:bg-accent selection:text-white box-border flex-nowrap">
+}
+
+/*
+.header {
+	background-color: #282c34;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
+}
+*/
+input {
+	background-color: var(--secondary);
+	border-radius: 0.3rem;
+	border: 1px solid var(--tertiary);
+	padding: 0.8rem;
+
+	&:focus {
+		outline: none;
+		border-color: var(--accent);
+	}
+}
+
+form {
+	display: flex;
+	gap: 0.5em;
+}
+
+button {
+	background-color: var(--accent);
+	color: var(--text);
+	border-radius: 0.3rem;
+	outline: none;
+	border: unset;
+	padding: 0.8em;
+	cursor: pointer;
+}
+
+.accent {
+	color: var(--accent);
+}
+
+h1 {
+	font-size: 2em;
+}
