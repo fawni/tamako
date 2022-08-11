@@ -14,9 +14,16 @@ cozy anonymous whispers. 🐞
 - [ ] web frontend (literal hell)
   - [x] basic skeleton
   - [ ] actual functionality
-  - [ ] cleanup code somehow
+- [ ] cleanup code
+  - [ ] backend
+  - [ ] frontend
 - [ ] implement ratelimit
-- [ ] github oauth to access private whispers `/api/auth/github`
+- [ ] implement auth for private whispers
+  - [ ] /auth to login
+  - [ ] /api/auth takes password and returns hash then save hash as token to local storage
+  - [ ] inclute header auth w token in requests
+  - [ ] return private whispers if token matches password
+  <!-- - [ ] github oauth to access private whispers `/api/auth/github` -->
 - [ ] dockerize
 - [ ] optional non-anonymous whispers
 - [ ] discord webhook support
