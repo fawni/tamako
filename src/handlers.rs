@@ -8,6 +8,7 @@ pub async fn add_whisper(
     collection: Collection<Whisper>,
     text: String,
     private: bool,
+    name: Option<String>,
 ) -> WarpResult<impl Reply> {
     let whisper = Whisper {
         timestamp: Some(
@@ -19,6 +20,7 @@ pub async fn add_whisper(
         snowflake: Some(SnowflakeIdGenerator::new(1, 1).real_time_generate()),
         text,
         private,
+        name,
     };
 
     collection.insert_one(&whisper, None).await.unwrap();
@@ -29,9 +31,14 @@ pub async fn add_whisper(
     ))
 }
 
-pub async fn list_whispers(collection: Collection<Whisper>) -> WarpResult<impl Reply> {
+pub async fn list_whispers(collection: Collection<Whisper>, auth: bool) -> WarpResult<impl Reply> {
+    let filter = match auth {
+        true => doc! {},
+        false => doc! { "private": false },
+    };
+
     let whispers: Vec<Whisper> = collection
-        .find(doc! { "private": false }, None)
+        .find(filter, None)
         .await
         .unwrap()
         .try_collect()
