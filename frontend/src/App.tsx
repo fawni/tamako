@@ -1,6 +1,7 @@
 import type { Component } from "solid-js";
 
 import styles from "./App.module.scss";
+import Checkbox from "./components/checkbox";
 
 async function sendWhispers() {
 	try {
@@ -18,20 +19,62 @@ const App: Component = () => {
 				<h1>
 					<span class={styles.accent}>~</span>tamako
 				</h1>
-				<form>
+
+				<div class={styles.whisper}>
 					<input
+						class={styles.text}
 						type="text"
-						maxlength="600"
-						placeholder="whisper me sommething!"
+						maxlength="20"
+						placeholder="anonymous"
 					></input>
+
+					<input
+						class={styles.text}
+						type="text"
+						maxlength="100"
+						placeholder="( =ω=)..nyaa"
+					></input>
+
+					<Checkbox></Checkbox>
+					{/* <label class={styles.container}>
+						private?
+						<input type="checkbox"></input>
+						<span class={styles.checkmark}></span>
+					</label> */}
+
+					{/* <div class={styles.checkbox}>
+						<input type="checkbox" id="private" name="private"></input>
+						<label for="private">private?</label>
+					</div> */}
+				</div>
+
+				<div>
 					<button
 						onclick={() => {
 							alert("todo");
 						}}
 					>
-						send
+						whisper
 					</button>
-				</form>
+				</div>
+				{/* <div>
+					<br></br>
+					<ul>
+						<li>
+							love you bro{" "}
+							<span class={styles.timestamp}>25 Dec 2022, 05:42:24 PM</span>
+						</li>
+						<li>
+							<span class={styles.accent}>name:</span>
+							you kinda suck{" "}
+							<span class={styles.timestamp}>16 Aug 2022, 08:28:16 PM</span>
+						</li>
+						<li>
+							this is so true yeah lmao hiii{" "}
+							<span class={styles.timestamp}>16 Aug 2022, 08:28:16 PM</span>
+						</li>
+					</ul>
+				</div> */}
 			</div>
 		</div>
 	);

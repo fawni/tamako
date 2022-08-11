@@ -4,6 +4,7 @@
 	--primary: #302838;
 	--secondary: #2a2331;
 	--tertiary: #231d29;
+	--highlight: #634e75;
 	--accent: #e23a7e;
 	--text: #dedbeb;
 
@@ -11,6 +12,7 @@
 }
 
 * {
+	box-sizing: border-box;
 	font-family: var(--font);
 
 	&::selection {
