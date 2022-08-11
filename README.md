@@ -1,10 +1,8 @@
 # tamako
 
-> (wip) basic backend implemented. missing frontend.
+cozy anonymous whispers 🐞
 
-cozy anonymous whispers. 🐞
-
-# todo!
+# todo
 
 - [x] implement api endpoints
   - [x] add whisper `POST @ /api/whisper`
