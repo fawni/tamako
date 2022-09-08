@@ -2,6 +2,10 @@
 
 cozy anonymous whispers 🐞
 
+# note ⚠️
+
+tamako is currently a work-in-progress (WIP) and is **extremely** unpolished. everything is unstable, implemented quick-and-dirty and **very** subject to change.
+
 # todo
 
 - [x] implement api endpoints
@@ -9,20 +13,19 @@ cozy anonymous whispers 🐞
   - [x] list whispers `GET @ /api/whispers`
   - [ ] delete whisper/s (requires auth) `DELETE @ /api/whispers/:snowflake`
 - [x] limit payload to prevent spam
-- [ ] web frontend (literal hell)
+- [x] web frontend (literal hell)
   - [x] basic skeleton
-  - [ ] actual functionality
+  - [x] actual functionality
 - [ ] cleanup code
   - [ ] backend
   - [ ] frontend
 - [ ] implement ratelimit
 - [ ] implement auth for private whispers
   - [ ] /auth to login
-  - [ ] /api/auth takes password and returns hash then save hash as token to local storage
-  - [ ] inclute header auth w token in requests
-  - [ ] return private whispers if token matches password
-  <!-- - [ ] github oauth to access private whispers `/api/auth/github` -->
-- [ ] dockerize
-- [ ] optional non-anonymous whispers
-- [ ] discord webhook support
+  - [ ] `POST @ /api/auth` post password, recieve hash, save hash as token in local storage
+  - [ ] include token in headers
+  - [ ] validate token and return private whispers
+- [x] optional non-anonymous whispers
 - [ ] simple cli utility
+- [ ] discord webhook support
+- [ ] dockerize
