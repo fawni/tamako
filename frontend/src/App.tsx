@@ -1,80 +1,98 @@
-import type { Component } from "solid-js";
+import { Component, createSignal, onMount, For, Show } from "solid-js";
+import toast, { Toaster } from "solid-toast";
 
-import styles from "./App.module.scss";
+import "./App.scss";
 import Checkbox from "./components/checkbox";
 
 async function sendWhispers() {
-	try {
-	} catch (err) {
-		console.log(err);
+	const nameEl = document.getElementById("whisper-name");
+	const textEl = document.getElementById("whisper-text");
+	const privateEl = document.getElementById("whisper-private");
+
+	let data = {
+		name: nameEl?.value,
+		text: textEl?.value,
+		private: privateEl?.checked,
+	};
+
+	let res = await fetch("http://localhost:3030/api/whisper", {
+		method: "POST",
+		headers: {
+			"content-type": "application/json",
+		},
+		body: JSON.stringify(data, (_, v) => (v === "" ? undefined : v)),
+	});
+
+	if (res.status === 201) {
+		toast.success("sent! >w<");
+	} else {
+		toast.error("an error occurred TwT");
 	}
-	//   console.log("Whispering...");
 }
 
 const App: Component = () => {
+	const [whispers, setWhispers] = createSignal([]);
+
+	onMount(async () => {
+		const res = await fetch("http://localhost:3030/api/whispers");
+		setWhispers(await res.json());
+	});
+
 	return (
-		// <div class="bg-primary min-h-screen text-center font-iosevka selection:bg-accent selection:text-white box-border flex-nowrap">
-		<div class={styles.App}>
-			<div class="flex flex-col  items-center justify-center ">
+		<div class="App">
+			<div>
 				<h1>
-					<span class={styles.accent}>~</span>tamako
+					<span class="accent">~</span>tamako
 				</h1>
 
-				<div class={styles.whisper}>
+				<div class="whisper-container">
 					<input
-						class={styles.text}
+						class="input-text"
 						type="text"
+						id="whisper-name"
 						maxlength="20"
 						placeholder="anonymous"
 					></input>
 
 					<input
-						class={styles.text}
+						class="input-text"
 						type="text"
+						id="whisper-text"
 						maxlength="100"
 						placeholder="( =ω=)..nyaa"
 					></input>
 
-					<Checkbox></Checkbox>
-					{/* <label class={styles.container}>
-						private?
-						<input type="checkbox"></input>
-						<span class={styles.checkmark}></span>
-					</label> */}
-
-					{/* <div class={styles.checkbox}>
-						<input type="checkbox" id="private" name="private"></input>
-						<label for="private">private?</label>
-					</div> */}
+					<Checkbox>private?</Checkbox>
 				</div>
 
 				<div>
-					<button
-						onclick={() => {
-							alert("todo");
+					<button onclick={sendWhispers}>whisper</button>
+					<Toaster
+						toastOptions={{
+							style: {
+								background: "#2a2331",
+								color: "#dedbeb",
+							},
 						}}
-					>
-						whisper
-					</button>
+					/>
 				</div>
-				{/* <div>
+
+				<div class="whispers">
 					<br></br>
 					<ul>
-						<li>
-							love you bro{" "}
-							<span class={styles.timestamp}>25 Dec 2022, 05:42:24 PM</span>
-						</li>
-						<li>
-							<span class={styles.accent}>name:</span>
-							you kinda suck{" "}
-							<span class={styles.timestamp}>16 Aug 2022, 08:28:16 PM</span>
-						</li>
-						<li>
-							this is so true yeah lmao hiii{" "}
-							<span class={styles.timestamp}>16 Aug 2022, 08:28:16 PM</span>
-						</li>
+						<For each={whispers()}>
+							{(whisper) => (
+								<li>
+									<Show when={whisper.name}>
+										<span class="accent">{whisper.name}:</span>
+									</Show>
+									{whisper.text}
+									<span class="timestamp"> • {whisper.timestamp}</span>
+								</li>
+							)}
+						</For>
 					</ul>
-				</div> */}
+				</div>
 			</div>
 		</div>
 	);

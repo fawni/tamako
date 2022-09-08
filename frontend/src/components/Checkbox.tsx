@@ -1,13 +1,13 @@
-import type { Component } from "solid-js";
+import { ParentComponent, ParentProps } from "solid-js";
 
-import styles from "./Checkbox.module.scss";
+import "./Checkbox.scss";
 
-const Checkbox: Component = () => {
+const Checkbox: ParentComponent = (props: ParentProps) => {
 	return (
-		<label class={styles.container}>
-			private?
-			<input type="checkbox"></input>
-			<span class={styles.checkmark}></span>
+		<label class="checkbox-container">
+			{props.children}
+			<input type="checkbox" id="whisper-private"></input>
+			<span class="checkmark"></span>
 		</label>
 	);
 };
