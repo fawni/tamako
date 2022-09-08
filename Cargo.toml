@@ -4,18 +4,31 @@ version = "0.1.0"
 authors = ["obscurity <z@x4.pm>"]
 license = "OSL-3.0"
 edition = "2021"
+publish = false
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
 
 [dependencies]
 tokio = { version = "1.20", features = ["full"] }
 warp = "0.3"
 serde = {version = "1.0", features = ["derive"] }
 dotenvy = "0.15"
+# kankyo = "0.3"
 mongodb = "2.3"
 futures = "0.3"
 chrono = "0.4"
 chrono-tz = "0.6"
 pretty_env_logger = "0.4"
-color-eyre = { version = "0.6", default-features = false }
+color-eyre = "0.6"
 rs-snowflake = "0.6"
-argon2 = "0.4"
-rand_core = { version = "0.6", features = ["std"] }
+# argon2 = "0.4"
+# rand_core = { version = "0.6", features = ["std"] }
+lazy_static = "1.4"
+
+jwt = "0.16"
+hmac = "0.12"
+sha2 = "0.10"

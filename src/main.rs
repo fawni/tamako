@@ -1,14 +1,22 @@
+use color_eyre::Result;
 use std::env;
-use tamako::{db, filters, Result};
+use tamako::{constants, db, filters};
 use warp::Filter;
+
+fn init() -> Result<()> {
+    dotenvy::dotenv().ok();
+    // kankyo::init();
+    color_eyre::install()?;
+    env::set_var("RUST_LOG", &*constants::RUST_LOG);
+    pretty_env_logger::init();
+
+    Ok(())
+}
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    dotenvy::dotenv().ok();
-    env::set_var("RUST_LOG", env::var("RUST_LOG")?);
-    pretty_env_logger::init();
+    init()?;
 
-    let port: u16 = env::var("PORT")?.parse::<u16>()?;
     let collection = db::get_collection(db::connect_to_db().await?);
 
     // let home = warp::path::end().map(|| "🍙");
@@ -17,7 +25,9 @@ async fn main() -> Result<()> {
     let api = filters::whispers(collection);
 
     let routes = home.or(assets).or(api).with(warp::log("tamako"));
-    warp::serve(routes).run(([0, 0, 0, 0], port)).await;
+    warp::serve(routes)
+        .run(([0, 0, 0, 0], *constants::PORT))
+        .await;
 
     Ok(())
 }
