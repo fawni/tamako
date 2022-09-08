@@ -2,6 +2,8 @@
 
 cozy anonymous whispers 🐞
 
+![scrot](assets/scrot.png)
+
 # note ⚠️
 
 tamako is currently a work-in-progress (WIP) and is **extremely** unpolished. everything is unstable, implemented quick-and-dirty and **very** subject to change.
@@ -29,3 +31,7 @@ tamako is currently a work-in-progress (WIP) and is **extremely** unpolished. ev
 - [ ] simple cli utility
 - [ ] discord webhook support
 - [ ] dockerize
+
+## license
+
+[OSL-3.0](LICENSE)
