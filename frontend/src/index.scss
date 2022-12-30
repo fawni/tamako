@@ -1,40 +1,40 @@
-@import url("https://x6r.github.io/addons/fonts.css");
+@import url("https://fawni.github.io/addons/fonts.css");
 
 :root {
-	--primary: #302838;
-	--secondary: #2a2331;
-	--tertiary: #231d29;
-	--highlight: #634e75;
-	--accent: #e23a7e;
-	--text: #dedbeb;
+  --primary: #302838;
+  --secondary: #2a2331;
+  --tertiary: #231d29;
+  --highlight: #634e75;
+  --accent: #e23a7e;
+  --text: #dedbeb;
 
-	--font: "Iosevka Comfy", "Iosevka Comfy Web", "Arabic UI Display";
-	// --font: "Unifont", "Iosevka Comfy", "Iosevka Comfy Web", "Arabic UI Display";
+  --font: "Iosevka Comfy", "Iosevka Comfy Web", "Arabic UI Display";
+  // --font: "Unifont", "Iosevka Comfy", "Iosevka Comfy Web", "Arabic UI Display";
 }
 
 * {
-	box-sizing: border-box;
-	font-family: var(--font);
+  box-sizing: border-box;
+  font-family: var(--font);
 
-	&::selection {
-		background: var(--accent);
-		color: var(--text);
-	}
+  &::selection {
+    background: var(--accent);
+    color: var(--text);
+  }
 }
 
 html,
 body {
-	background-color: var(--primary);
-	color: var(--text);
+  background-color: var(--primary);
+  color: var(--text);
 
-	font-size: 16px;
-	line-height: 1.8;
+  font-size: 16px;
+  line-height: 1.8;
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-flow: column nowrap;
-	margin: 0;
-	width: 100%;
-	height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column nowrap;
+  margin: 0;
+  width: 100%;
+  height: 100%;
 }

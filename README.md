@@ -1,6 +1,6 @@
-# tamako
+# tamako🐞
 
-cozy anonymous whispers 🐞
+> Cozy anonymous whispers!
 
 ![scrot](assets/scrot.png)
 
