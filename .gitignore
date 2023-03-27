@@ -3,3 +3,4 @@
 
 # production
 .env
+*.db*

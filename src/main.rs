@@ -1,4 +1,4 @@
-use miette::IntoDiagnostic;
+use miette::{IntoDiagnostic, WrapErr};
 use nanorand::Rng;
 use serde::{Deserialize, Serialize};
 use tide::{prelude::json, Request, Response};
@@ -77,11 +77,11 @@ async fn list(_req: Request<()>) -> tide::Result<tide::Body> {
 #[tokio::main]
 async fn main() -> miette::Result<()> {
     femme::start();
+    dotenvy::dotenv().ok();
 
     let mut app = tide::new();
 
     app.at("/").get(|_| async { Ok("🐞") });
-
     app.at("/api/whisper").nest({
         let mut api = tide::new();
 
@@ -91,7 +91,10 @@ async fn main() -> miette::Result<()> {
         api
     });
 
-    app.listen("127.0.0.1:8714").await.into_diagnostic()?;
+    let port = std::env::var("PORT").into_diagnostic().wrap_err("PORT")?;
+    app.listen(format!("127.0.0.1:{port}"))
+        .await
+        .into_diagnostic()?;
 
     Ok(())
 }
