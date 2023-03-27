@@ -37,7 +37,7 @@ impl Whisper {
 impl Default for Whisper {
     fn default() -> Self {
         Self {
-            name: Some("Anonymous".to_owned()),
+            name: None,
             message: String::new(),
             private: false,
             snowflake: Self::generate_snowflake(),
