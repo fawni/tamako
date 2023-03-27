@@ -1,19 +1,21 @@
-use miette::{IntoDiagnostic, WrapErr};
+use db::Database;
 use nanorand::Rng;
 use serde::{Deserialize, Serialize};
 use tide::{prelude::json, Request, Response};
 
+mod db;
+
 #[derive(Deserialize, Serialize, Debug)]
-struct Whisper {
-    name: Option<String>,
-    message: String,
-    private: bool,
+pub struct Whisper {
+    pub name: Option<String>,
+    pub message: String,
+    pub private: bool,
     #[serde(skip_deserializing)]
     #[serde(default = "Whisper::generate_snowflake")]
-    snowflake: i64,
+    pub snowflake: i64,
     #[serde(skip_deserializing)]
     #[serde(default = "Whisper::generate_timestamp")]
-    timestamp: String,
+    pub timestamp: String,
 }
 
 impl Whisper {
@@ -46,44 +48,32 @@ impl Default for Whisper {
     }
 }
 
-async fn add(mut req: Request<()>) -> tide::Result<Response> {
+async fn add(mut req: Request<Database>) -> tide::Result<Response> {
     let whisper: Whisper = req.body_json().await?;
+    let database = req.state();
+    database.add(&whisper).await?;
     let mut res = Response::new(tide::StatusCode::Created);
     res.set_body(json!(&whisper));
     Ok(res)
 }
 
-async fn list(_req: Request<()>) -> tide::Result<tide::Body> {
-    let whispers = vec![
-        Whisper {
-            name: Some("guy".to_owned()),
-            message: "yep".to_owned(),
-            ..Whisper::default()
-        },
-        Whisper {
-            name: None,
-            message: "nop".to_owned(),
-            ..Whisper::default()
-        },
-        Whisper {
-            message: "secret love letter".to_owned(),
-            private: true,
-            ..Whisper::default()
-        },
-    ];
+async fn list(req: Request<Database>) -> tide::Result<tide::Body> {
+    let database = req.state();
+    let whispers = database.list().await?;
     tide::Body::from_json(&whispers)
 }
 
-#[tokio::main]
-async fn main() -> miette::Result<()> {
+#[async_std::main]
+async fn main() -> tide::Result<()> {
     femme::start();
     dotenvy::dotenv().ok();
 
-    let mut app = tide::new();
+    let mut tamako = tide::new();
 
-    app.at("/").get(|_| async { Ok("🐞") });
-    app.at("/api/whisper").nest({
-        let mut api = tide::new();
+    tamako.at("/").get(|_| async { Ok("🐞") });
+    tamako.at("/api/whisper").nest({
+        let database = db::open().await?;
+        let mut api = tide::with_state(database);
 
         api.at("/").get(list);
         api.at("/").post(add);
@@ -91,10 +81,8 @@ async fn main() -> miette::Result<()> {
         api
     });
 
-    let port = std::env::var("PORT").into_diagnostic().wrap_err("PORT")?;
-    app.listen(format!("127.0.0.1:{port}"))
-        .await
-        .into_diagnostic()?;
+    let port = std::env::var("PORT")?;
+    tamako.listen(format!("127.0.0.1:{port}")).await?;
 
     Ok(())
 }
