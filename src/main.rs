@@ -82,8 +82,14 @@ async fn main() -> miette::Result<()> {
 
     app.at("/").get(|_| async { Ok("🐞") });
 
-    app.at("whisper").post(add);
-    app.at("whisper").get(list);
+    app.at("/api/whisper").nest({
+        let mut api = tide::new();
+
+        api.at("/").get(list);
+        api.at("/").post(add);
+
+        api
+    });
 
     app.listen("127.0.0.1:8714").await.into_diagnostic()?;
 
