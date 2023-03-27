@@ -7,6 +7,20 @@ repository = "https://github.com/fawni/tamako"
 license = "OSL-3.0"
 edition = "2021"
 
+[dependencies]
+tide = "0.16.0"
+tokio = { version = "1.26.0", features = ["full"] }
+
+femme = "2.2.1"
+log = "0.4.17"
+miette = { version = "5.6.0", features = ["fancy"] }
+
+serde = { version = "1.0.158", features = ["derive"] }
+chrono = "0.4.24"
+chrono-tz = "0.8.1"
+rs-snowflake = "0.6.0"
+nanorand = "0.7.0"
+
 [profile.release]
 strip = true
 lto = true
