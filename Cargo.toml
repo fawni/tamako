@@ -11,10 +11,7 @@ edition = "2021"
 tide = "0.16.0"
 async-std = { version = "1.12.0", features = ["attributes"] }
 
-sqlx = { version = "0.6.3", features = [
-    "sqlite",
-    "runtime-async-std-native-tls",
-] }
+sqlx = { version = "0.6.3", features = ["sqlite", "runtime-async-std-rustls"] }
 
 femme = "2.2.1"
 serde = { version = "1.0.158", features = ["derive"] }
