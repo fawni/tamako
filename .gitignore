@@ -1,13 +1,5 @@
-# code
-.vscode/
-.idea/
-
 # rust
 /target
-
-# typescript
-node_modules/
-dist/
 
 # production
 .env
