@@ -53,7 +53,7 @@ impl Default for Whisper {
 }
 
 pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
-    let whisper: Whisper = req.body_json().await?;
+    let whisper = req.body_json::<Whisper>().await?;
     let database = req.state();
     database.add(&whisper).await?;
     let mut res = Response::new(tide::StatusCode::Created);
