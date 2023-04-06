@@ -12,8 +12,9 @@ pub struct DatabaseState {
 
 impl DatabaseState {
     pub async fn new() -> tide::Result<Self> {
-        let pool = SqlitePool::connect(dotenvy_macro::dotenv!("DATABASE_URL")).await?;
-        Ok(Self { pool })
+        Ok(Self {
+            pool: SqlitePool::connect(dotenvy_macro::dotenv!("DATABASE_URL")).await?,
+        })
     }
 
     pub async fn add(&self, whisper: &Whisper) -> tide::Result<()> {
@@ -39,7 +40,5 @@ impl DatabaseState {
 }
 
 pub async fn open() -> tide::Result<Database> {
-    let result = Arc::new(DatabaseState::new().await?);
-
-    Ok(result)
+    Ok(Arc::new(DatabaseState::new().await?))
 }
