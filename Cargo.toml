@@ -15,7 +15,7 @@ sqlx = { version = "0.6.3", features = ["sqlite", "runtime-async-std-rustls"] }
 
 femme = "2.2.1"
 serde = { version = "1.0.158", features = ["derive"] }
-dotenvy = "0.15.7"
+dotenvy_macro = "0.15.7"
 
 chrono = "0.4.24"
 chrono-tz = "0.8.1"

@@ -5,7 +5,6 @@ mod snowflake;
 #[async_std::main]
 async fn main() -> tide::Result<()> {
     femme::start();
-    dotenvy::dotenv().ok();
 
     let mut tamako = tide::new();
 
@@ -20,9 +19,8 @@ async fn main() -> tide::Result<()> {
         api
     });
 
-    let host = String::from("127.0.0.1");
-    let port = std::env::var("PORT")?.parse::<u16>()?;
-    tamako.listen((host, port)).await?;
+    let port = dotenvy_macro::dotenv!("PORT").parse::<u16>()?;
+    tamako.listen(("127.0.0.1".to_owned(), port)).await?;
 
     Ok(())
 }

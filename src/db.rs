@@ -12,7 +12,7 @@ pub struct DatabaseState {
 
 impl DatabaseState {
     pub async fn new() -> tide::Result<Self> {
-        let pool = SqlitePool::connect(&std::env::var("DATABASE_URL")?).await?;
+        let pool = SqlitePool::connect(dotenvy_macro::dotenv!("DATABASE_URL")).await?;
         Ok(Self { pool })
     }
 
