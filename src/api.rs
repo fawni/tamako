@@ -5,20 +5,18 @@ use tide::{prelude::json, Request, Response};
 use crate::db::Database;
 
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(default)]
 pub struct Whisper {
     pub name: Option<String>,
 
     pub message: String,
 
-    #[serde(default)]
     pub private: bool,
 
     #[serde(skip_deserializing)]
-    #[serde(default = "Whisper::generate_snowflake")]
     pub snowflake: i64,
 
     #[serde(skip_deserializing)]
-    #[serde(default = "Whisper::generate_timestamp")]
     pub timestamp: String,
 }
 
