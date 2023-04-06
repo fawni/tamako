@@ -1,8 +1,10 @@
-use nanorand::Rng;
+use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
 use tide::{prelude::json, Request, Response};
 
-use crate::db::Database;
+use crate::{db::Database, snowflake::Snowflake};
+
+static SNOWFLAKE: OnceCell<Snowflake> = OnceCell::new();
 
 #[derive(Deserialize, Serialize, Debug)]
 #[serde(default)]
@@ -22,12 +24,7 @@ pub struct Whisper {
 
 impl Whisper {
     fn generate_snowflake() -> i64 {
-        let mut rng = nanorand::WyRand::new();
-        snowflake::SnowflakeIdGenerator::new(
-            rng.generate_range(1..=1024),
-            rng.generate_range(1..=1024),
-        )
-        .real_time_generate()
+        SNOWFLAKE.get_or_init(Snowflake::new).clone().generate()
     }
 
     fn generate_timestamp() -> String {
