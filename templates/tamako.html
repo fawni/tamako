@@ -15,6 +15,10 @@
     </script>
 
     <style>
+        ::selection {
+            background-color: #eb99a1;
+        }
+
         body, h1, input, button {
             font-family: 'Nunito', sans-serif;
         }
@@ -24,8 +28,12 @@
         }
 
         input#send, button {
-            color: #d9d8dc;
+            color: #d9d8dc !important;
             font-weight: bold;
+        }
+
+        input[type="checkbox"]:checked {
+            accent-color: #eb99a1;
         }
 
         li {
@@ -37,7 +45,8 @@
             position: fixed;
             right: 0;
             bottom: 0;
-            margin-bottom: 0;
+            margin: 0;
+            user-select: none;
         }
     </style>
 {% endblock %}
@@ -58,7 +67,11 @@
         </div>
         <button onclick="whisper()">send</button>
     </section>
+
+    <br/>
     <hr/>
+    <br/>
+
     <section>
         <ul>
         {% for whisper in whispers %}
