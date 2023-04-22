@@ -15,7 +15,9 @@ async fn main() -> tide::Result<()> {
         let mut api = tide::with_state(database);
 
         api.at("/whisper").get(api::list);
-        api.at("/whisper").post(api::add);
+        api.at("/whisper")
+            .with(tide_governor::GovernorMiddleware::per_minute(2)?)
+            .post(api::add);
 
         api
     });

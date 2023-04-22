@@ -8,8 +8,9 @@ license = "OSL-3.0"
 edition = "2021"
 
 [dependencies]
-tide = "0.16.0"
 async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }
+tide = "0.16.0"
+tide-governor = "1.0.3"
 
 askama = { version = "0.12.0", features = ["with-tide"] }
 askama_tide = "0.15.0"
