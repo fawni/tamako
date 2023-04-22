@@ -1,0 +1,160 @@
+<!-- <head>
+    <title>tamako</title>
+    <link rel="icon" type="image/png" href="https://files.catbox.moe/zcosa9.ico" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-vader.css">
+    <link rel="stylesheet" href="https://unpkg.com/@csstools/normalize.css"/>
+
+    <script>
+        const whisper = () => {
+            let name = document.getElementById("name").value;
+            let message = document.getElementById("whisper").value;
+            let private = document.getElementById("private").checked;
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/whisper", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify({name, message, private}));
+            xhr.onload = () => { (xhr.status == 201) ? window.location.reload() : alert("Error: " + xhr.status) };
+        };
+    </script>
+
+    <style>
+        body, h1, input, button {
+            font-family: 'Nunito', sans-serif;
+        }
+
+        input, button {
+            font-size: 1.6rem;
+        }
+
+        input#send, button {
+            color: #d9d8dc;
+            font-weight: bold;
+        }
+
+        #mascot img {
+            width: 350px;
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <h1>~tamako</h1>
+        <blockquote>Cozy anonymous whispers 🐞</blockquote>
+    </section>
+
+    <section>
+        <div>
+            <input type="text" id="name" placeholder="name" size="30" maxlength="32">
+        </div>
+        <div>
+            <input type="text" id="whisper" placeholder="whisper" size="30" maxlength="1024" required>
+        </div>
+        <div>
+            <label for="private">
+                <input type="checkbox" id="private">
+                private
+            </label>
+        </div>
+        <button onclick="whisper()">send</button>
+    </section>
+
+    <hr/>
+
+    <section>
+        <ul>
+        {% for whisper in whispers %}
+            {% if whisper.name.is_some() %}
+                <li><b>{{whisper.name.as_ref().unwrap()}}</b>: {{whisper.message}}</li>
+            {% else %}
+                <li><b>anon</b>: {{whisper.message}}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </section>
+
+    <div id="mascot">
+        <img src="https://files.catbox.moe/8y7ffe.png"/>
+    </div>
+</body> -->
+
+{% extends "base.html" %}
+
+{% block head %}
+    <script>
+        const whisper = () => {
+            let name = document.getElementById("name").value;
+            let message = document.getElementById("whisper").value;
+            let private = document.getElementById("private").checked;
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/whisper", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify({name, message, private}));
+            xhr.onload = () => { (xhr.status == 201) ? window.location.reload() : alert("Error: " + xhr.status) };
+        };
+    </script>
+
+    <style>
+        body, h1, input, button {
+            font-family: 'Nunito', sans-serif;
+        }
+
+        input, button {
+            font-size: 1.6rem;
+        }
+
+        input#send, button {
+            color: #d9d8dc;
+            font-weight: bold;
+        }
+
+        #mascot img {
+            width: 350px;
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <section>
+        <div>
+            <input type="text" id="name" placeholder="name" size="30" maxlength="32">
+        </div>
+        <div>
+            <input type="text" id="whisper" placeholder="whisper" size="30" maxlength="1024" required>
+        </div>
+        <div>
+            <label for="private">
+                <input type="checkbox" id="private">
+                private
+            </label>
+        </div>
+        <button onclick="whisper()">send</button>
+    </section>
+    <hr/>
+    <section>
+        <ul>
+        {% for whisper in whispers %}
+            {% if whisper.name.is_some() %}
+                <li><b>{{whisper.name.as_ref().unwrap()}}</b>: {{whisper.message}}</li>
+            {% else %}
+                <li><b>anon</b>: {{whisper.message}}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </section>
+
+    <div id="mascot">
+        <img src="https://files.catbox.moe/8y7ffe.png"/>
+    </div>
+{% endblock %}

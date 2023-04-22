@@ -6,7 +6,7 @@ use crate::{db::Database, snowflake::Snowflake};
 
 static SNOWFLAKE: OnceCell<Snowflake> = OnceCell::new();
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(default)]
 pub struct Whisper {
     pub name: Option<String>,
@@ -48,7 +48,11 @@ impl Default for Whisper {
 }
 
 pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
-    let whisper = req.body_json::<Whisper>().await?;
+    let mut whisper = req.body_json::<Whisper>().await?;
+    whisper.name = whisper.name.filter(|name| !name.is_empty());
+    if whisper.message.is_empty() {
+        return Ok(Response::new(tide::StatusCode::BadRequest));
+    }
     let database = req.state();
     database.add(&whisper).await?;
     let mut res = Response::new(tide::StatusCode::Created);

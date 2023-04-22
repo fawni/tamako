@@ -1,6 +1,7 @@
 mod api;
 mod db;
 mod snowflake;
+mod template;
 
 #[async_std::main]
 async fn main() -> tide::Result<()> {
@@ -8,19 +9,22 @@ async fn main() -> tide::Result<()> {
 
     let mut tamako = tide::new();
 
-    tamako.at("/").get(|_| async { Ok("🐞") });
-    tamako.at("/api/whisper").nest({
+    // tamako.at("/").get(|_| async { Ok("🐞") });
+    // tamako.at("/assets").serve_dir("public/assets/")?;
+    tamako.at("/").get(template::render);
+    tamako.at("/api").nest({
         let database = db::open().await?;
         let mut api = tide::with_state(database);
 
-        api.at("/").get(api::list);
-        api.at("/").post(api::add);
+        api.at("/whisper").get(api::list);
+        api.at("/whisper").post(api::add);
 
         api
     });
 
+    let host = dotenvy_macro::dotenv!("HOST");
     let port = dotenvy_macro::dotenv!("PORT").parse::<u16>()?;
-    tamako.listen(("127.0.0.1".to_owned(), port)).await?;
+    tamako.listen((host, port)).await?;
 
     Ok(())
 }
