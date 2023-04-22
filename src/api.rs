@@ -62,6 +62,11 @@ pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
 
 pub async fn list(req: Request<Database>) -> tide::Result<tide::Body> {
     let database = req.state();
-    let whispers = database.list().await?;
+    let whispers = database
+        .list()
+        .await?
+        .into_iter()
+        .filter(|whisper| !whisper.private)
+        .collect::<Vec<Whisper>>();
     tide::Body::from_json(&whispers)
 }

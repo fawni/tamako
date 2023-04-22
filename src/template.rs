@@ -15,10 +15,7 @@ pub async fn render(_req: Request<()>) -> tide::Result<tide::Response> {
     let whispers = reqwest::get(format!("http://{}:{}/api/whisper", host, port))
         .await?
         .json::<Vec<Whisper>>()
-        .await?
-        .into_iter()
-        .filter(|whisper| !whisper.private)
-        .collect::<Vec<Whisper>>();
+        .await?;
     let res = WhispersTemplate { whispers };
 
     Ok(res.into())
