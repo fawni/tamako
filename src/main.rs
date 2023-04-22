@@ -9,8 +9,6 @@ async fn main() -> tide::Result<()> {
 
     let mut tamako = tide::new();
 
-    // tamako.at("/").get(|_| async { Ok("🐞") });
-    // tamako.at("/assets").serve_dir("public/assets/")?;
     tamako.at("/").get(template::render);
     tamako.at("/api").nest({
         let database = db::open().await?;

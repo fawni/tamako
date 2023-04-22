@@ -10,7 +10,7 @@
             xhr.open("POST", "/api/whisper", true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(JSON.stringify({name, message, private}));
-            xhr.onload = () => { (xhr.status == 201) ? window.location.reload() : alert("Error: " + xhr.status) };
+            xhr.onload = () => { (xhr.status == 201) ? window.location.reload() : alert(`Error ${xhr.status}: ${xhr.statusText} ${xhr.responseText ? "- " + xhr.responseText : ""}`) };
         };
     </script>
 
