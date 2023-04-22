@@ -41,7 +41,7 @@ impl Whisper {
     }
 
     /// Checks if the whisper is public
-    fn is_public(&self) -> bool {
+    const fn is_public(&self) -> bool {
         !self.private
     }
 
@@ -75,17 +75,18 @@ impl Default for Whisper {
 /// A trait for filtering out private whispers
 pub trait Private {
     /// Filters out private whispers from a vector of whispers
-    fn filter(self) -> Vec<Whisper>;
+    fn filter(self) -> Self;
 }
 
 impl Private for Vec<Whisper> {
-    fn filter(self) -> Vec<Whisper> {
+    fn filter(self) -> Self {
         self.into_iter()
-            .filter(|whisper| whisper.is_public())
-            .collect::<Vec<Whisper>>()
+            .filter(Whisper::is_public)
+            .collect::<Self>()
     }
 }
 
+/// Adds a new whisper
 pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
     let mut whisper = req.body_json::<Whisper>().await?;
     whisper.validate()?;
@@ -99,6 +100,7 @@ pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
     Ok(res)
 }
 
+/// Lists all whispers
 pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     let database = req.state();
     let whispers = database.list().await?.filter();
