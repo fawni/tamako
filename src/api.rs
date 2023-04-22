@@ -37,6 +37,21 @@ impl Whisper {
                 "whispers cannot be empty",
             ));
         }
+        if let Some(name) = &self.name {
+            if name.len() > 32 {
+                return Err(tide::Error::from_str(
+                    StatusCode::BadRequest,
+                    "name cannot be longer than 32 characters",
+                ));
+            }
+        }
+        if self.message.len() > 1024 {
+            return Err(tide::Error::from_str(
+                StatusCode::BadRequest,
+                "whispers cannot be longer than 1024 characters",
+            ));
+        }
+
         Ok(())
     }
 
