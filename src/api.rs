@@ -57,13 +57,6 @@ impl Whisper {
             .format("%d %b %Y, %I:%M:%S %p")
             .to_string()
     }
-
-    /// Filters out private whispers from a vector of whispers
-    fn filter(v: Vec<Self>) -> Vec<Self> {
-        v.into_iter()
-            .filter(|whisper| whisper.is_public())
-            .collect::<Vec<Whisper>>()
-    }
 }
 
 impl Default for Whisper {
@@ -76,6 +69,20 @@ impl Default for Whisper {
             snowflake: Self::generate_snowflake(),
             timestamp: Self::generate_timestamp(),
         }
+    }
+}
+
+/// A trait for filtering out private whispers
+pub trait Private {
+    /// Filters out private whispers from a vector of whispers
+    fn filter(self) -> Vec<Whisper>;
+}
+
+impl Private for Vec<Whisper> {
+    fn filter(self) -> Vec<Whisper> {
+        self.into_iter()
+            .filter(|whisper| whisper.is_public())
+            .collect::<Vec<Whisper>>()
     }
 }
 
@@ -94,7 +101,7 @@ pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
 
 pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     let database = req.state();
-    let whispers = Whisper::filter(database.list().await?);
+    let whispers = database.list().await?.filter();
 
     Body::from_json(&whispers)
 }
