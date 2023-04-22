@@ -8,6 +8,6 @@ setup:
     sqlx db create
     sqlx migrate run
 
-# Runs exessive clippy lints (possible false positives so just warn)
+# Exessive clippy lints
 lint:
     cargo clippy --locked -- -W clippy::pedantic -W clippy::nursery
