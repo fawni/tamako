@@ -128,7 +128,8 @@ pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
 /// Lists all whispers
 pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     let database = req.state();
-    let whispers = database.list().await?.filter();
+    let mut whispers = database.list().await?.filter();
+    whispers.reverse();
 
     Body::from_json(&whispers)
 }
