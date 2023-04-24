@@ -1,3 +1,4 @@
+use chrono::NaiveDateTime;
 use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
 use tide::{prelude::json, Body, Request, Response, StatusCode};
@@ -81,6 +82,19 @@ impl Whisper {
             .with_timezone(&chrono_tz::Tz::Africa__Cairo)
             .format("%d %b %Y, %I:%M:%S %p")
             .to_string()
+    }
+
+    /// Returns the whisper's unix timestamp
+    #[allow(dead_code)]
+    // i don't want to have two timestamps in the whisper struct so this is just a helper method if unix timestamps are needed
+    fn unix_timestamp(&self) -> i64 {
+        /// Timezone offset in seconds. Set to EET timezone offset (UTC+2) by default
+        const OFFSET: i64 = 7200;
+
+        NaiveDateTime::parse_from_str(&self.timestamp, "%d %b %Y, %I:%M:%S %p")
+            .unwrap()
+            .timestamp()
+            - OFFSET
     }
 }
 
