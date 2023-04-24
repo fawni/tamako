@@ -6,6 +6,7 @@ mod template;
 #[async_std::main]
 async fn main() -> tide::Result<()> {
     femme::start();
+    dotenvy::dotenv().ok();
 
     let mut tamako = tide::new();
 
@@ -22,9 +23,9 @@ async fn main() -> tide::Result<()> {
         api
     });
 
-    let host = dotenvy_macro::dotenv!("HOST");
-    let port = dotenvy_macro::dotenv!("PORT").parse::<u16>()?;
-    tamako.listen((host, port)).await?;
+    let host = api::host();
+    let port = api::port();
+    tamako.listen((host.to_owned(), port.to_owned())).await?;
 
     Ok(())
 }

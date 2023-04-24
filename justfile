@@ -5,8 +5,7 @@ _default:
 
 # Setup the database
 setup:
-    sqlx db create
-    sqlx migrate run
+    sqlx db setup
 
 # Exessive clippy lints
 lint:

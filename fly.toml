@@ -1,0 +1,39 @@
+# fly.toml app configuration file generated for tamako on 2023-04-23T20:17:40+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "tamako"
+primary_region = "lhr"
+
+[checks]
+[checks.alive]
+port = "8714"
+grace_period = "5s"
+interval = "15s"
+timeout = "2s"
+type = "tcp"
+
+[env]
+DATABASE_URL = "sqlite:/app/data/whispers.db"
+HOST = "0.0.0.0"
+PORT = "8714"
+
+[mounts]
+source = "data"
+destination = "/app/data"
+
+[[services]]
+auto_start_machines = true
+auto_stop_machines = true
+internal_port = 8714
+protocol = "tcp"
+force_https = true
+
+[[services.ports]]
+handlers = ["http"]
+port = 80
+
+[[services.ports]]
+handlers = ["tls", "http"]
+port = 443

@@ -1,7 +1,7 @@
 use askama::Template;
 use tide::Request;
 
-use crate::api::Whisper;
+use crate::api::{self, Whisper};
 
 /// The template that renders the whispers page
 #[derive(Template)]
@@ -11,15 +11,20 @@ pub struct WhispersTemplate {
     pub whispers: Vec<Whisper>,
 }
 
+impl WhispersTemplate {
+    /// Returns a new template with the given whispers
+    pub fn new(whispers: Vec<Whisper>) -> Self {
+        Self { whispers }
+    }
+}
+
 /// Renders the whispers page
 pub async fn render(_req: Request<()>) -> tide::Result<tide::Response> {
-    let host = dotenvy_macro::dotenv!("HOST");
-    let port = dotenvy_macro::dotenv!("PORT").parse::<u16>()?;
+    let (host, port) = (api::host(), api::port());
     let whispers = reqwest::get(format!("http://{host}:{port}/api/whisper"))
         .await?
         .json::<Vec<Whisper>>()
         .await?;
-    let res = WhispersTemplate { whispers };
 
-    Ok(res.into())
+    Ok(WhispersTemplate::new(whispers).into())
 }

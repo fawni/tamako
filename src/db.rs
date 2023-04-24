@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use async_std::process::Command;
 use sqlx::{Pool, Sqlite, SqlitePool};
 
 use crate::api::Whisper;
@@ -17,7 +18,7 @@ impl DatabaseState {
     /// Creates a new database state
     pub async fn new() -> tide::Result<Self> {
         Ok(Self {
-            pool: SqlitePool::connect(dotenvy_macro::dotenv!("DATABASE_URL")).await?,
+            pool: SqlitePool::connect(&std::env::var("DATABASE_URL")?).await?,
         })
     }
 
@@ -47,5 +48,9 @@ impl DatabaseState {
 
 /// Opens a connection to the database
 pub async fn open() -> tide::Result<Database> {
-    Ok(Arc::new(DatabaseState::new().await?))
+    Command::new("sqlx").args(["db", "create"]).output().await?;
+    let database = Arc::new(DatabaseState::new().await?);
+    sqlx::migrate!("./migrations").run(&database.pool).await?;
+
+    Ok(database)
 }

@@ -1,0 +1,55 @@
+{
+  "db": "SQLite",
+  "1e609cbad4c49ccc865b207eefb5df6bc101c43161715f14da52d212902f59ef": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 5
+      }
+    },
+    "query": "INSERT INTO whispers (name, message, private, snowflake, timestamp) VALUES (?, ?, ?, ?, ?)"
+  },
+  "b38c84280e6ec7b77d1d1bc1b82377dcc005598a7183be6476a2ed23b03ec461": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "message",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "private",
+          "ordinal": 2,
+          "type_info": "Bool"
+        },
+        {
+          "name": "snowflake",
+          "ordinal": 3,
+          "type_info": "Int64"
+        },
+        {
+          "name": "timestamp",
+          "ordinal": 4,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 0
+      }
+    },
+    "query": "SELECT * FROM whispers"
+  }
+}

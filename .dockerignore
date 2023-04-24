@@ -1,0 +1,9 @@
+# flyctl launch added from .gitignore
+# rust
+target
+**\.cargo
+
+# production
+**\.env
+**\*.db*
+fly.toml

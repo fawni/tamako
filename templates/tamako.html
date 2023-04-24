@@ -5,14 +5,15 @@
     const whisper = () => {
         let name = document.getElementById("name").value;
         let message = document.getElementById("whisper").value;
-        let private = document.getElementById("private").checked;
+        // Enable when authentication is implemented
+        // let private = document.getElementById("private").checked;
         let xhr = new XMLHttpRequest();
         xhr.open("POST", "/api/whisper", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(JSON.stringify({
             name,
             message,
-            private
+            // private
         }));
         xhr.onload = () => {
             xhr.status == 201 ?
@@ -73,9 +74,9 @@
         <input type="text" id="whisper" placeholder="whisper" size="30" maxlength="1024" required />
     </div>
     <div>
-        <label for="private">
-            <input type="checkbox" id="private" />
-            private
+        <label for="private" >
+            <input type="checkbox" id="private" disabled />
+            private (soon)
         </label>
     </div>
     <button onclick="whisper()">send</button>

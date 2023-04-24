@@ -6,6 +6,16 @@ use crate::{db::Database, snowflake::Snowflake};
 
 static SNOWFLAKE: OnceCell<Snowflake> = OnceCell::new();
 
+pub fn host() -> &'static str {
+    static HOST: OnceCell<String> = OnceCell::new();
+    HOST.get_or_init(|| std::env::var("HOST").unwrap())
+}
+
+pub fn port() -> &'static u16 {
+    static PORT: OnceCell<u16> = OnceCell::new();
+    PORT.get_or_init(|| std::env::var("PORT").unwrap().parse::<u16>().unwrap())
+}
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(default)]
 pub struct Whisper {
