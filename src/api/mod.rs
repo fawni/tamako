@@ -141,7 +141,7 @@ pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
     let database = req.state();
     database.add(&whisper).await?;
     match webhook::send(&whisper).await {
-        Ok(_) => tide::log::info!("---> Webhook sent"),
+        Ok(_) => tide::log::info!("--> Webhook sent"),
         Err(e) => tide::log::error!("Webhook error --> {e}"),
     };
 
