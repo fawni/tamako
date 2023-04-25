@@ -1,11 +1,16 @@
+pub use async_std::main;
+
 use chrono::NaiveDateTime;
 use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
 use tide::{prelude::json, Body, Request, Response, StatusCode};
 
-use crate::{db::Database, snowflake::Snowflake};
+use crate::db::Database;
 
-static SNOWFLAKE: OnceCell<Snowflake> = OnceCell::new();
+mod snowflake;
+mod webhook;
+
+static SNOWFLAKE: OnceCell<snowflake::Snowflake> = OnceCell::new();
 
 pub fn host() -> &'static str {
     static HOST: OnceCell<String> = OnceCell::new();
@@ -73,7 +78,10 @@ impl Whisper {
 
     /// Generates a unique snowflake for the whisper
     fn generate_snowflake() -> i64 {
-        SNOWFLAKE.get_or_init(Snowflake::new).clone().generate()
+        SNOWFLAKE
+            .get_or_init(snowflake::Snowflake::new)
+            .clone()
+            .generate()
     }
 
     /// Generates a timestamp in the format: `dd MMM yyyy, hh:mm:ss a`
@@ -132,6 +140,10 @@ pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
 
     let database = req.state();
     database.add(&whisper).await?;
+    match webhook::send(&whisper).await {
+        Ok(_) => tide::log::info!("---> Webhook sent"),
+        Err(e) => tide::log::error!("Webhook error --> {e}"),
+    };
 
     let mut res = Response::new(StatusCode::Created);
     res.set_body(json!(&whisper));

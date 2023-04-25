@@ -1,9 +1,8 @@
 mod api;
 mod db;
-mod snowflake;
 mod template;
 
-#[async_std::main]
+#[api::main]
 async fn main() -> tide::Result<()> {
     femme::start();
     dotenvy::dotenv().ok();
@@ -23,9 +22,8 @@ async fn main() -> tide::Result<()> {
         api
     });
 
-    let host = api::host();
-    let port = api::port();
-    tamako.listen((host.to_owned(), port.to_owned())).await?;
+    let addr = (api::host().to_owned(), api::port().to_owned());
+    tamako.listen(addr).await?;
 
     Ok(())
 }
