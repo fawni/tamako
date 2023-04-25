@@ -1,21 +1,32 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>tamako</title>
-        <link rel="icon" type="image/png" href="https://files.catbox.moe/zcosa9.ico" sizes="32x32" />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-vader.css">
-        <link rel="stylesheet" href="https://unpkg.com/@csstools/normalize.css"/>
-        {% block head %}{% endblock %}
-    </head>
+<html lang="en">
 
-    <body>
-        <section>
-            <h1>~tamako</h1>
-            <blockquote>Cozy anonymous whispers 🐞</blockquote>
-        </section>
-        {% block body %}{% endblock %}
-    </body>
+<head>
+    <title>tamako</title>
+    <link rel="icon" type="image/png" href="https://files.catbox.moe/zcosa9.ico" sizes="32x32" />
+    <meta property="description" content="eternally confused 🌷">
+    <meta name="theme-color" content="#eb99a1">
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://catbox.moe">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito&display=swap">
+    <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-vader.css">
+    <link rel="stylesheet" href="https://unpkg.com/@csstools/normalize.css" />
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <section>
+        <h1>~tamako</h1>
+        <blockquote>Cozy anonymous whispers 🐞</blockquote>
+    </section>
+    {% block body %}{% endblock %}
+</body>
+
 </html>
