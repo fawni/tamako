@@ -8,13 +8,9 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
-      - name: "install latest stable Rust"
-        uses: "actions-rs/toolchain@v1"
-        with:
-          toolchain: "stable"
-          override: true
+      - uses: dtolnay/rust-toolchain@stable
       - uses: "Swatinem/rust-cache@v1"
         with:
           key: "clippy"
       - name: "run clippy"
-        run: "cargo clippy"
+        run: "cargo clippy --locked -- -D warnings"
