@@ -1,4 +1,4 @@
-name: "Run clippy lints"
+name: "Clippy lints"
 on:
   push:
   pull_request:
