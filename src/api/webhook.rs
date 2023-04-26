@@ -18,7 +18,8 @@ pub async fn send(whisper: &super::Whisper) -> WebhookResult<()> {
                     None,
                 )
                 .description(&whisper.message)
-                .footer(&whisper.timestamp, None)
+                .footer(&whisper.snowflake.to_string(), None)
+                .timestamp(&whisper.timestamp)
                 .color(if whisper.is_public() {
                     "15440289"
                 } else {

@@ -1,6 +1,7 @@
 pub use async_std::main;
 
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
+use chrono_tz::Tz;
 use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
 use tide::{prelude::json, Body, Request, Response, StatusCode};
@@ -84,25 +85,18 @@ impl Whisper {
             .generate()
     }
 
-    /// Generates a timestamp in the format: `dd MMM yyyy, hh:mm:ss a`
+    /// Generates an RFC3339 timestamp
     fn generate_timestamp() -> String {
-        chrono::Utc::now()
-            .with_timezone(&chrono_tz::Tz::Africa__Cairo)
-            .format("%d %b %Y, %I:%M:%S %p")
-            .to_string()
+        Utc::now().with_timezone(&Tz::Africa__Cairo).to_rfc3339()
     }
 
-    /// Returns the whisper's unix timestamp
-    #[allow(dead_code)]
-    // i don't want to have two timestamps in the whisper struct so this is just a helper method if unix timestamps are needed
-    fn unix_timestamp(&self) -> i64 {
-        /// Timezone offset in seconds. Set to EET timezone offset (UTC+2) by default
-        const OFFSET: i64 = 7200;
-
-        NaiveDateTime::parse_from_str(&self.timestamp, "%d %b %Y, %I:%M:%S %p")
+    /// Returns a pretty timestamp in the format: `dd MMM yyyy, hh:mm:ss a`
+    fn pretty_timestamp(&self) -> String {
+        DateTime::parse_from_rfc3339(&self.timestamp)
             .unwrap()
-            .timestamp()
-            - OFFSET
+            .with_timezone(&Tz::Africa__Cairo)
+            .format("%d %b %Y, %I:%M:%S %p")
+            .to_string()
     }
 }
 
@@ -151,11 +145,32 @@ pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
     Ok(res)
 }
 
+#[derive(Deserialize, Default)]
+#[serde(default)]
+/// Query params for the list endpoint
+struct ListParams {
+    /// The amount of whispers to take
+    take: Option<usize>,
+
+    /// Whether to return pretty timestamps or not
+    pretty: Option<bool>,
+}
+
 /// Lists all whispers
 pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     let database = req.state();
     let mut whispers = database.list().await?.filter();
+
+    let params = req.query::<ListParams>()?;
     whispers.reverse();
+    if let Some(n) = params.take {
+        whispers.truncate(n);
+    }
+    if let Some(true) = params.pretty {
+        whispers
+            .iter_mut()
+            .for_each(|w| w.timestamp = w.pretty_timestamp());
+    }
 
     Body::from_json(&whispers)
 }
