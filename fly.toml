@@ -6,7 +6,6 @@
 app = "tamako"
 primary_region = "lhr"
 
-[checks]
 [checks.alive]
 port = "8714"
 grace_period = "5s"
@@ -15,9 +14,9 @@ timeout = "2s"
 type = "tcp"
 
 [env]
-DATABASE_URL = "sqlite:/app/data/whispers.db"
 HOST = "0.0.0.0"
 PORT = "8714"
+DATABASE_URL = "sqlite:/app/data/whispers.db"
 
 [mounts]
 source = "data"

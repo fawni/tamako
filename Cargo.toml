@@ -15,14 +15,18 @@ tide-governor = "1.0.3"
 askama = { version = "0.12.0", features = ["with-tide"] }
 askama_tide = "0.15.0"
 
-sqlx = { version = "0.6.3", features = ["sqlite", "runtime-async-std-rustls", "offline"] }
+sqlx = { version = "0.6.3", features = [
+    "sqlite",
+    "runtime-async-std-rustls",
+    "offline",
+] }
 
 femme = "2.2.1"
-serde = { version = "1.0.158", features = ["derive"] }
+serde = { version = "1.0.160", features = ["derive"] }
 dotenvy = "0.15.7"
 
 chrono = "0.4.24"
-chrono-tz = "0.8.1"
+chrono-tz = "0.8.2"
 
 rs-snowflake = "0.6.0"
 once_cell = "1.17.1"
