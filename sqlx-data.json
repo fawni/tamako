@@ -10,6 +10,16 @@
     },
     "query": "INSERT INTO whispers (name, message, private, snowflake, timestamp) VALUES (?, ?, ?, ?, ?)"
   },
+  "661f5887ac7276e883261e52541b77c8f501474a16ca13645c63cdc2644aa248": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM whispers WHERE snowflake = ?"
+  },
   "b38c84280e6ec7b77d1d1bc1b82377dcc005598a7183be6476a2ed23b03ec461": {
     "describe": {
       "columns": [
@@ -51,5 +61,47 @@
       }
     },
     "query": "SELECT * FROM whispers"
+  },
+  "c20358c64852573c3f5ae0efb00af6eceeca79ab2e00882e20bd8013e0bdab21": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "message",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "private",
+          "ordinal": 2,
+          "type_info": "Bool"
+        },
+        {
+          "name": "snowflake",
+          "ordinal": 3,
+          "type_info": "Int64"
+        },
+        {
+          "name": "timestamp",
+          "ordinal": 4,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM whispers WHERE snowflake = ?"
   }
 }
