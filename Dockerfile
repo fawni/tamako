@@ -13,6 +13,6 @@ FROM debian:bullseye-slim
 RUN apt-get update && apt-get install -y --no-install-recommends libssl-dev pkg-config ca-certificates && apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 # RUN mkdir -p /app/data
-COPY --from=builder /usr/src/tamako/tamako /usr/src/tamako/migrations/ /app/
+COPY --from=builder /usr/src/tamako/tamako /usr/src/tamako/migrations/ /usr/src/tamako/assets/ /app/
 COPY --from=builder /usr/local/cargo/bin/sqlx /usr/local/bin/sqlx
 CMD [ "/app/tamako" ]

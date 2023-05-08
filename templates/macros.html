@@ -1,0 +1,7 @@
+{% macro whisper(name, message) %}
+<li><b>{{name}}</b>: {{message}}</li>
+{% endmacro %}
+
+{% macro private_whisper(name, message) %}
+<li class="private"><b>{{name}}</b>: {{message}}</li>
+{% endmacro %}

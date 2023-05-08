@@ -2,4 +2,4 @@
 
 > Cozy anonymous whispers!
 
-![scrot](assets/scrot.png)
+![scrot](.github/assets/scrot.png)

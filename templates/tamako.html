@@ -1,10 +1,13 @@
 {% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %} tamako {% endblock %}
 
 {% block head %}
 <script>
     const whisper = () => {
         let name = document.getElementById("name").value;
-        let message = document.getElementById("whisper").value;
+        let message = document.getElementById("message").value;
         let private = document.getElementById("private").checked;
         let xhr = new XMLHttpRequest();
         xhr.open("POST", "/api/whisper", true);
@@ -15,68 +18,30 @@
             private
         }));
         xhr.onload = () => {
-            xhr.status == 201 ?
-                window.location.reload() :
-                alert(`Error ${xhr.status}: ${xhr.statusText}${xhr.responseText ? " - " + xhr.responseText : ""}`);
+            if (xhr.status == 201) {
+                notyf.success("whisper sent");
+                setInterval(() => {
+                    window.location.reload();
+                }, 2100);
+            } else {
+                notyf.error(xhr.responseText);
+            }
         };
     };
 </script>
-
-<style>
-    ::selection {
-        background-color: #eb99a1;
-    }
-
-    body,
-    h1,
-    input,
-    button {
-        font-family: "Nunito", sans-serif;
-    }
-
-    input,
-    button {
-        font-size: 1.6rem;
-    }
-
-    input#send,
-    button {
-        color: #d9d8dc !important;
-        font-weight: bold;
-    }
-
-    input[type="checkbox"]:checked {
-        accent-color: #eb99a1;
-    }
-
-    li {
-        word-wrap: break-word;
-    }
-
-    br, img {
-        user-select: none;
-    }
-
-    #mascot img {
-        max-width: 350px;
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        margin: 0;
-    }
-</style>
 {% endblock %}
 
 {% block body %}
-<section>
+<section id="whisper">
+    <h4>whisper</h4>
     <div>
         <input type="text" id="name" placeholder="name (optional)" size="30" maxlength="32" />
     </div>
     <div>
-        <input type="text" id="whisper" placeholder="whisper" size="30" maxlength="1024" required />
+        <input type="text" id="message" placeholder="whisper" size="30" maxlength="1024" required />
     </div>
     <div>
-        <label for="private" >
+        <label for="private">
             <input type="checkbox" id="private" />
             private
         </label>
@@ -88,19 +53,23 @@
 <hr />
 <br />
 
-<section>
+<section id="whispers">
     <ul>
         {% for whisper in whispers %}
-            {% if whisper.name.is_some() %}
-                <li><b>{{whisper.name.as_ref().unwrap()}}</b>: {{whisper.message}}</li>
+            {% let name = whisper.name.clone().unwrap_or("anon".to_owned()) -%}
+            {% let message = whisper.message.clone() -%}
+
+            {% if whisper.private %}
+                {% call macros::private_whisper(name, message) %}
             {% else %}
-                <li><b>anon</b>: {{whisper.message}}</li>
+                {% call macros::whisper(name, message) %}
             {% endif %}
+
         {% endfor %}
     </ul>
 </section>
 
-<div id="mascot">
-    <img src="https://i.imgur.com/JwA0Hty.png" alt="tamako mascot" />
+<div id="mascot" onclick="window.location.href='/auth'">
+    <img src="/assets/tamako_smol.png" alt="tamako mascot" />
 </div>
 {% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %} tamako::auth {% endblock %}
+
+{% block head %}
+<script>
+    const auth = () => {
+        let secret = document.getElementById("secret").value;
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/auth", true);
+        xhr.setRequestHeader("token", secret);
+        xhr.send();
+        xhr.onload = () => {
+            if (xhr.status == 200) {
+                document.cookie = `token=${secret};`;
+                window.location.href = "/";
+            }
+            else {
+                notyf.error(xhr.responseText);
+            }
+        };
+    };
+
+    const logout = () => {
+        document.cookie = "token=;";
+        window.location.href = "/";
+    };
+</script>
+{% endblock %}
+
+{% block body %}
+<section>
+    <h4>auth</h4>
+    <div>
+        <input type="password" id="secret" placeholder="secret" size="30" maxlength="280" />
+    </div>
+    <button onclick="auth()">auth</button>
+    <button onclick="logout()">logout</button>
+</section>
+
+<div id="mascot">
+    <img src="/assets/tamako_smol.png" alt="tamako mascot" />
+</div>
+{% endblock %}

@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <title>tamako</title>
-    <link rel="icon" type="image/png" href="https://files.catbox.moe/zcosa9.ico" sizes="32x32" />
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/assets/favicon.ico" sizes="32x32" />
     <meta property="description" content="eternally confused 🌷">
     <meta name="theme-color" content="#eb99a1">
 
@@ -13,11 +13,70 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preconnect" href="https://catbox.moe">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito&display=swap">
     <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-vader.css">
     <link rel="stylesheet" href="https://unpkg.com/@csstools/normalize.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf/notyf.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/notyf/notyf.min.js"></script>
+
+    <style>
+        ::selection {
+            background-color: #eb99a1;
+        }
+
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        input,
+        button {
+            font-family: "Nunito", sans-serif;
+        }
+
+        input,
+        button {
+            font-size: 1.6rem;
+        }
+
+        button {
+            color: #d9d8dc !important;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        input[type="checkbox"]:checked {
+            accent-color: #eb99a1;
+        }
+
+        li {
+            word-wrap: break-word;
+        }
+
+        .private {
+            color: #eb99a1;
+            font-style: italic;
+        }
+
+        br,
+        img {
+            user-select: none;
+        }
+
+        #mascot img {
+            max-width: 350px;
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+    </style>
     {% block head %}{% endblock %}
 </head>
 
@@ -27,6 +86,17 @@
         <blockquote>Cozy anonymous whispers 🐞</blockquote>
     </section>
     {% block body %}{% endblock %}
+    <script type="application/javascript">
+        var notyf = new Notyf({
+            duration: 2000,
+            position: {
+                x: 'right',
+                y: 'top',
+            },
+            ripple: false,
+            dismissible: true,
+        });
+    </script>
 </body>
 
 </html>

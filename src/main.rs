@@ -1,4 +1,5 @@
 mod api;
+mod auth;
 mod db;
 mod template;
 
@@ -7,11 +8,13 @@ async fn main() -> tide::Result<()> {
     femme::start();
     dotenvy::dotenv().ok();
 
-    let mut tamako = tide::new();
+    let database = db::open().await?;
+    let mut tamako = tide::with_state(database.clone());
 
-    tamako.at("/").get(template::render);
+    tamako.at("/").get(template::tamako);
+    tamako.at("/auth").get(template::auth);
+
     tamako.at("/api").nest({
-        let database = db::open().await?;
         let mut api = tide::with_state(database);
 
         api.at("/whisper").get(api::list);
@@ -19,10 +22,14 @@ async fn main() -> tide::Result<()> {
             .with(tide_governor::GovernorMiddleware::per_minute(2)?)
             .post(api::add);
 
+        api.at("/auth").post(api::auth);
+
         api
     });
 
-    let addr = (api::host().to_owned(), api::port().to_owned());
+    tamako.at("/assets").serve_dir("assets")?;
+
+    let addr = (api::HOST.to_owned(), api::PORT.to_owned());
     tamako.listen(addr).await?;
 
     Ok(())

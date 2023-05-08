@@ -1,7 +1,9 @@
 use webhook::client::{WebhookClient, WebhookResult};
 
+use super::Whisper;
+
 /// Send a webhook with the given whisper
-pub async fn send(whisper: &super::Whisper) -> WebhookResult<()> {
+pub async fn send(whisper: &Whisper) -> WebhookResult<()> {
     WebhookClient::new(&std::env::var("WEBHOOK_URL")?)
         .send(|m| {
             m.content(if whisper.is_public() {

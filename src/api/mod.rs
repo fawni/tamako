@@ -2,26 +2,19 @@ pub use async_std::main;
 
 use chrono::{DateTime, Utc};
 use chrono_tz::Tz;
-use once_cell::sync::OnceCell;
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use tide::{prelude::json, Body, Request, Response, StatusCode};
 
-use crate::db::Database;
+use crate::{auth, db::Database};
 
 mod snowflake;
 mod webhook;
 
-static SNOWFLAKE: OnceCell<snowflake::Snowflake> = OnceCell::new();
+pub static HOST: Lazy<String> = Lazy::new(|| std::env::var("HOST").unwrap());
+pub static PORT: Lazy<u16> = Lazy::new(|| std::env::var("PORT").unwrap().parse::<u16>().unwrap());
 
-pub fn host() -> &'static str {
-    static HOST: OnceCell<String> = OnceCell::new();
-    HOST.get_or_init(|| std::env::var("HOST").unwrap())
-}
-
-pub fn port() -> &'static u16 {
-    static PORT: OnceCell<u16> = OnceCell::new();
-    PORT.get_or_init(|| std::env::var("PORT").unwrap().parse::<u16>().unwrap())
-}
+static SNOWFLAKE: Lazy<snowflake::Snowflake> = Lazy::new(snowflake::Snowflake::new);
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(default)]
@@ -45,28 +38,25 @@ pub struct Whisper {
 }
 
 impl Whisper {
-    /// Validates the accuracy of the whisper's data
-    fn validate(&mut self) -> tide::Result<()> {
+    /// Preforms basic validation checks for the whisper
+    fn validate(&mut self) -> Result<(), Response> {
         self.name = self.name.take().filter(|name| !name.is_empty());
         if self.message.is_empty() {
-            return Err(tide::Error::from_str(
-                StatusCode::BadRequest,
-                "whispers cannot be empty",
-            ));
+            return Err(Response::builder(StatusCode::BadRequest)
+                .body("whispers cannot be empty")
+                .build());
         }
         if let Some(name) = &self.name {
             if name.len() > 32 {
-                return Err(tide::Error::from_str(
-                    StatusCode::BadRequest,
-                    "name cannot be longer than 32 characters",
-                ));
+                return Err(Response::builder(StatusCode::BadRequest)
+                    .body("name cannot be longer than 32 characters")
+                    .build());
             }
         }
         if self.message.len() > 1024 {
-            return Err(tide::Error::from_str(
-                StatusCode::BadRequest,
-                "whispers cannot be longer than 1024 characters",
-            ));
+            return Err(Response::builder(StatusCode::BadRequest)
+                .body("whispers cannot be longer than 1024 characters")
+                .build());
         }
 
         Ok(())
@@ -79,10 +69,7 @@ impl Whisper {
 
     /// Generates a unique snowflake for the whisper
     fn generate_snowflake() -> i64 {
-        SNOWFLAKE
-            .get_or_init(snowflake::Snowflake::new)
-            .clone()
-            .generate()
+        SNOWFLAKE.clone().generate()
     }
 
     /// Generates an RFC3339 timestamp
@@ -127,10 +114,35 @@ impl Private for Vec<Whisper> {
     }
 }
 
+/// Authenticates the secret key
+pub async fn auth(req: Request<Database>) -> tide::Result<Response> {
+    let token = if let Some(value) = req.header("token") {
+        &value[0]
+    } else {
+        return Ok(Response::builder(StatusCode::BadRequest)
+            .body("Missing token header")
+            .build());
+    };
+
+    if !auth::validate(&token.to_string()) {
+        // println!("need: {}\ngot: {}", auth::token(), token);
+        return Ok(Response::builder(StatusCode::Forbidden)
+            .body("Invalid secret")
+            .build());
+    }
+
+    let mut res = Response::new(StatusCode::Ok);
+    res.set_body(Body::from("Authenticated"));
+
+    Ok(res)
+}
+
 /// Adds a new whisper
 pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
     let mut whisper = req.body_json::<Whisper>().await?;
-    whisper.validate()?;
+    if let Err(res) = whisper.validate() {
+        return Ok(res);
+    }
 
     let database = req.state();
     database.add(&whisper).await?;
@@ -149,8 +161,8 @@ pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
 #[serde(default)]
 /// Query params for the list endpoint
 struct ListParams {
-    /// The amount of whispers to take
-    take: Option<usize>,
+    /// The number of whispers to return
+    limit: Option<usize>,
 
     /// Whether to return pretty timestamps or not
     pretty: Option<bool>,
@@ -159,13 +171,24 @@ struct ListParams {
 /// Lists all whispers
 pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     let database = req.state();
-    let mut whispers = database.list().await?.filter();
+    let mut whispers = database.list().await?;
+
+    // Filter out private whispers if the token is invalid or not provided
+    match req.header("token") {
+        Some(token) if auth::validate(&token[0].to_string()) => (),
+        _ => whispers = whispers.filter(),
+    }
+
+    // Reverse the order of the whispers so that the latest whispers are at the top
+    whispers.reverse();
 
     let params = req.query::<ListParams>()?;
-    whispers.reverse();
-    if let Some(n) = params.take {
+    // Truncate the whispers if the `limit` param is provided
+    if let Some(n) = params.limit {
         whispers.truncate(n);
     }
+
+    // Convert the whispers' timestamps to pretty timestamps if the `pretty` param is provided
     if let Some(true) = params.pretty {
         whispers
             .iter_mut()
