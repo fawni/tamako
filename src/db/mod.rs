@@ -44,6 +44,19 @@ impl DatabaseState {
 
         Ok(whispers)
     }
+
+    /// Deletes a whisper from the database
+    pub async fn delete(&self, snowflake: &str) -> tide::Result<()> {
+        sqlx::query!("SELECT * FROM whispers WHERE snowflake = ?", snowflake)
+            .fetch_one(&self.pool)
+            .await
+            .map_err(|_| tide::Error::from_str(tide::StatusCode::NotFound, "Whisper not found"))?;
+        sqlx::query!("DELETE FROM whispers WHERE snowflake = ?", snowflake)
+            .execute(&self.pool)
+            .await?;
+
+        Ok(())
+    }
 }
 
 /// Opens a connection to the database

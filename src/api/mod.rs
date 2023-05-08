@@ -125,9 +125,8 @@ pub async fn auth(req: Request<Database>) -> tide::Result<Response> {
     };
 
     if !auth::validate(&token.to_string()) {
-        // println!("need: {}\ngot: {}", auth::token(), token);
         return Ok(Response::builder(StatusCode::Forbidden)
-            .body("Invalid secret")
+            .body("Invalid token")
             .build());
     }
 
@@ -175,7 +174,7 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
 
     // Filter out private whispers if the token is invalid or not provided
     match req.header("token") {
-        Some(token) if auth::validate(&token[0].to_string()) => (),
+        Some(header_values) if auth::validate(&header_values[0].to_string()) => (),
         _ => whispers = whispers.filter(),
     }
 
@@ -196,4 +195,26 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     }
 
     Body::from_json(&whispers)
+}
+
+/// Deletes a whisper
+pub async fn delete(req: Request<Database>) -> tide::Result<Response> {
+    match req.header("token") {
+        Some(header_values) if auth::validate(&header_values[0].to_string()) => (),
+        _ => {
+            return Err(tide::Error::from_str(
+                StatusCode::Forbidden,
+                "Invalid token",
+            ))
+        }
+    }
+
+    let snowflake = req.param("snowflake")?;
+    let database = req.state();
+    database.delete(snowflake).await?;
+
+    let mut res = Response::new(StatusCode::Ok);
+    res.set_body(format!("Deleted {snowflake}"));
+
+    Ok(res)
 }

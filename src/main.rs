@@ -21,6 +21,7 @@ async fn main() -> tide::Result<()> {
         api.at("/whisper")
             .with(tide_governor::GovernorMiddleware::per_minute(2)?)
             .post(api::add);
+        api.at("/whisper/:snowflake").delete(api::delete);
 
         api.at("/auth").post(api::auth);
 
