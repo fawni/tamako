@@ -77,7 +77,7 @@
             cursor: pointer;
         }
     </style>
-    {% block head %}{% endblock %}
+    {% block head %}{% endblock ~%}
 </head>
 
 <body>
@@ -85,7 +85,7 @@
         <h1>~tamako</h1>
         <blockquote>Cozy anonymous whispers 🐞</blockquote>
     </section>
-    {% block body %}{% endblock %}
+    {% block body %}{% endblock +%}
     <script type="application/javascript">
         var notyf = new Notyf({
             duration: 2000,

@@ -6,7 +6,10 @@ use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use tide::{prelude::json, Body, Request, Response, StatusCode};
 
-use crate::{auth, db::Database};
+use crate::{
+    auth::{self, validate_header},
+    db::Database,
+};
 
 mod snowflake;
 mod webhook;
@@ -173,9 +176,8 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     let mut whispers = database.list().await?;
 
     // Filter out private whispers if the token is invalid or not provided
-    match req.header("token") {
-        Some(header_values) if auth::validate(&header_values[0].to_string()) => (),
-        _ => whispers = whispers.filter(),
+    if !validate_header(&req) {
+        whispers = whispers.filter();
     }
 
     // Reverse the order of the whispers so that the latest whispers are at the top
@@ -199,14 +201,11 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
 
 /// Deletes a whisper
 pub async fn delete(req: Request<Database>) -> tide::Result<Response> {
-    match req.header("token") {
-        Some(header_values) if auth::validate(&header_values[0].to_string()) => (),
-        _ => {
-            return Err(tide::Error::from_str(
-                StatusCode::Forbidden,
-                "Invalid token",
-            ))
-        }
+    if !validate_header(&req) {
+        return Err(tide::Error::from_str(
+            StatusCode::Forbidden,
+            "Invalid token",
+        ));
     }
 
     let snowflake = req.param("snowflake")?;
