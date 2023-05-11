@@ -134,7 +134,7 @@ pub async fn auth(req: Request<Database>) -> tide::Result<Response> {
     }
 
     let mut res = Response::new(StatusCode::Ok);
-    res.set_body(Body::from("Authenticated"));
+    res.set_body("Authenticated");
 
     Ok(res)
 }
@@ -190,7 +190,7 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     }
 
     // Convert the whispers' timestamps to pretty timestamps if the `pretty` param is provided
-    if let Some(true) = params.pretty {
+    if params.pretty == Some(true) {
         whispers
             .iter_mut()
             .for_each(|w| w.timestamp = w.pretty_timestamp());

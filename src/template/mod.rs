@@ -33,12 +33,14 @@ pub async fn tamako(req: Request<Database>) -> tide::Result<Response> {
     let database = req.state();
     let authenticated = validate_cookie(&req);
     // If the user is authenticated, show all whispers, otherwise only show public whispers.
-    let mut whispers = if authenticated {
+    let whispers = if authenticated {
         database.list().await?
     } else {
         database.list().await?.filter()
-    };
-    whispers.reverse();
+    }
+    .into_iter()
+    .rev()
+    .collect::<Vec<Whisper>>();
 
     Ok(WhispersTemplate::new(whispers, authenticated).into())
 }
