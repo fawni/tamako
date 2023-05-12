@@ -6,19 +6,20 @@ use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use tide::{prelude::json, Body, Request, Response, StatusCode};
 
-use crate::{
-    auth::{self, validate_header},
-    db::Database,
-};
+use crate::{auth, db::Database};
 
 mod snowflake;
 mod webhook;
 
+/// The host of the server
 pub static HOST: Lazy<String> = Lazy::new(|| std::env::var("HOST").unwrap());
+/// The port of the server
 pub static PORT: Lazy<u16> = Lazy::new(|| std::env::var("PORT").unwrap().parse::<u16>().unwrap());
 
+/// The snowflake generator
 static SNOWFLAKE: Lazy<snowflake::Snowflake> = Lazy::new(snowflake::Snowflake::new);
 
+/// The representation of a whisper
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(default)]
 pub struct Whisper {
@@ -118,16 +119,8 @@ impl Private for Vec<Whisper> {
 }
 
 /// Authenticates the secret key
-pub async fn auth(req: Request<Database>) -> tide::Result<Response> {
-    let token = if let Some(value) = req.header("token") {
-        &value[0]
-    } else {
-        return Ok(Response::builder(StatusCode::BadRequest)
-            .body("Missing token header")
-            .build());
-    };
-
-    if !auth::validate(&token.to_string()) {
+pub async fn auth<T>(req: Request<T>) -> tide::Result<Response> {
+    if !auth::validate_header(&req) {
         return Ok(Response::builder(StatusCode::Forbidden)
             .body("Invalid token")
             .build());
@@ -176,7 +169,7 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     let mut whispers = database.list().await?;
 
     // Filter out private whispers if the token is invalid or not provided
-    if !validate_header(&req) {
+    if !auth::validate_header(&req) {
         whispers = whispers.filter();
     }
 
@@ -199,9 +192,18 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     Body::from_json(&whispers)
 }
 
+/// Gets a whisper by its snowflake
+pub async fn get(req: Request<Database>) -> tide::Result<Body> {
+    let snowflake = req.param("snowflake")?;
+    let database = req.state();
+    let whisper = database.get(snowflake).await?;
+
+    Body::from_json(&whisper)
+}
+
 /// Deletes a whisper
 pub async fn delete(req: Request<Database>) -> tide::Result<Response> {
-    if !validate_header(&req) {
+    if !auth::validate_header(&req) {
         return Err(tide::Error::from_str(
             StatusCode::Forbidden,
             "Invalid token",

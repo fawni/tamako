@@ -45,6 +45,19 @@ impl DatabaseState {
         Ok(whispers)
     }
 
+    /// Gets a whisper from the database
+    pub async fn get(&self, snowflake: &str) -> tide::Result<Whisper> {
+        let whisper = sqlx::query_as!(
+            Whisper,
+            "SELECT * FROM whispers WHERE snowflake = ?",
+            snowflake
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(whisper)
+    }
+
     /// Deletes a whisper from the database
     pub async fn delete(&self, snowflake: &str) -> tide::Result<()> {
         sqlx::query!("SELECT * FROM whispers WHERE snowflake = ?", snowflake)

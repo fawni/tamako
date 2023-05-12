@@ -3,7 +3,6 @@ use tide::{Request, Response};
 
 use crate::{
     api::{Private, Whisper},
-    auth::validate_cookie,
     db::Database,
 };
 
@@ -31,7 +30,7 @@ impl WhispersTemplate {
 /// Renders the whispers page
 pub async fn tamako(req: Request<Database>) -> tide::Result<Response> {
     let database = req.state();
-    let authenticated = validate_cookie(&req);
+    let authenticated = crate::auth::validate_cookie(&req);
     // If the user is authenticated, show all whispers, otherwise only show public whispers.
     let whispers = if authenticated {
         database.list().await?
@@ -51,6 +50,6 @@ pub async fn tamako(req: Request<Database>) -> tide::Result<Response> {
 pub struct AuthTemplate;
 
 /// Renders the auth page
-pub async fn auth(_req: Request<Database>) -> tide::Result<Response> {
+pub async fn auth<T>(_: Request<T>) -> tide::Result<Response> {
     Ok(AuthTemplate.into())
 }
