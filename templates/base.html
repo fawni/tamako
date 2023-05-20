@@ -93,6 +93,13 @@
             margin: 2.5rem 0rem 2rem 0rem;
         }
 
+        .stripes {
+            display: block;
+            width: 100%;
+            height: 2rem;
+            background-image: repeating-linear-gradient( -45deg, #eb99a1 0 2px,transparent 2px 8px );
+        }
+
         #mascot img {
             max-width: 350px;
             position: fixed;
@@ -110,7 +117,7 @@
         <blockquote>Cozy anonymous whispers 🐞</blockquote>
     </section>
     {% block body %}{% endblock +%}
-    <hr />
+    <div class="stripes"></div>
     <footer class="muted">
         <div>
             <div>tamako is a cozy, single-user, anonymous whispers service</div>
