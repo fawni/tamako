@@ -159,6 +159,9 @@ struct ListParams {
     /// The number of whispers to return
     limit: Option<usize>,
 
+    /// The number of whispers to skip
+    offset: Option<usize>,
+
     /// Whether to return pretty timestamps or not
     pretty: Option<bool>,
 }
@@ -177,7 +180,13 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
     whispers.reverse();
 
     let params = req.query::<ListParams>()?;
-    // Truncate the whispers if the `limit` param is provided
+
+    // Skip `n` whispers if the `offset` param is provided
+    if let Some(n) = params.offset {
+        whispers = whispers.into_iter().skip(n).collect();
+    }
+
+    // Truncate whispers if the `limit` param is provided
     if let Some(n) = params.limit {
         whispers.truncate(n);
     }
