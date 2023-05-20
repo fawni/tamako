@@ -20,7 +20,11 @@
                 setInterval(() => {
                     window.location.reload();
                 }, 2100);
-            } else {
+            }
+            else if (xhr.status == 429) {
+                notyf.error("too many whispers, slow down");
+            }
+             else {
                 notyf.error(xhr.responseText);
             }
         };
@@ -48,21 +52,24 @@
 
 <br />
 <hr />
-<br />
 
 <section id="whispers">
-    <ul>
-        {% for whisper in whispers %}
-            {% let name = whisper.name.clone().unwrap_or("anon".to_owned()) %}
-            {% let message = whisper.message.clone() %}
+    {% if whispers.len() == 0 %}
+        <div class="placeholder muted">it's lonely in here...</div>
+    {% else %}
+        <ul>
+            {% for whisper in whispers %}
+                {% let name = whisper.name.clone().unwrap_or("anon".to_owned()) %}
+                {% let message = whisper.message.clone() %}
 
-            {% if whisper.private %}
-                <li class="private"><b>{{name~}}</b>: {{~message}}</li>
-            {% else %}
-                <li><b>{{name~}}</b>: {{~message}}</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+                {% if whisper.private %}
+                    <li class="private"><b class="whisperer">{{name~}}</b>: {{~message}}</li>
+                {% else %}
+                    <li><b class="whisperer">{{name~}}</b>: {{~message}}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
 </section>
 
 <div id="mascot" onclick="window.location.href='/auth'">
