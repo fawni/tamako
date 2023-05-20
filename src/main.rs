@@ -17,6 +17,8 @@ async fn main() -> tide::Result<()> {
     tamako.at("/api").nest({
         let mut api = tide::with_state(database);
 
+        api.at("/health").get(|_| async move { Ok("💚") });
+
         api.at("/whisper").get(api::list);
         api.at("/whisper/:snowflake").get(api::get);
         api.at("/whisper")
