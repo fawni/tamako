@@ -10,12 +10,14 @@ async fn main() -> tide::Result<()> {
 
     let database = db::open().await?;
     let mut tamako = tide::with_state(database.clone());
+    tamako.with(tide_compress::CompressMiddleware::new());
 
     tamako.at("/").get(templates::tamako);
     tamako.at("/auth").get(templates::auth);
 
     tamako.at("/api").nest({
         let mut api = tide::with_state(database);
+        api.with(tide_compress::CompressMiddleware::new());
 
         api.at("/health").get(|_| async move { Ok("💚") });
 
