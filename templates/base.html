@@ -4,8 +4,13 @@
 <head>
     <title>{% block title %}{% endblock %}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐞</text></svg>">
-    <meta property="description" content="eternally confused 🌷">
+    <meta property="description" content="tamako is a cozy, minimalistic, single-user, anonymous whispers service">
+
     <meta name="theme-color" content="#eb99a1">
+    <meta property="og:site_name" content="tamako" />
+    <meta property="og:title" content="{% block title %}{% endblock %}" />
+    <meta property="og:description" content="tamako is a cozy, minimalistic, single-user, anonymous whispers service" />
+    <meta property="og:image" content="/assets/tamako_smol.png">
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -57,6 +62,15 @@
 
         input[type="checkbox"]:checked {
             accent-color: #eb99a1;
+        }
+
+        input[type="checkbox"],
+        label {
+            cursor: pointer;
+        }
+
+        label {
+            width: fit-content;
         }
 
         ul {
@@ -113,18 +127,16 @@
 
 <body>
     <section>
-        <h1>~tamako</h1>
-        <blockquote>Cozy anonymous whispers 🐞</blockquote>
+        <h1>~{{user.name}}</h1>
+        <blockquote>{{user.description}}</blockquote>
     </section>
     {% block body %}{% endblock +%}
     <div class="stripes"></div>
-    <footer class="muted">
-        <div>
-            <div>tamako is a cozy, single-user, anonymous whispers service</div>
-            <a href="/">home</a> |
-            <a href="/auth">auth</a> |
-            <a href="https://github.com/fawni/tamako">source code</a>
-        </div>
+    <footer>
+        <div class="muted">tamako is a cozy, minimalistic, single-user, anonymous whispers service</div>
+        <a href="/">home</a> |
+        <a href="/auth">auth</a> |
+        <a href="https://github.com/fawni/tamako">source code</a>
     </footer>
     <div id="mascot">
         <img src="/assets/tamako_smol.png" alt="tamako mascot" />
