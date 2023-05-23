@@ -12,9 +12,14 @@ mod snowflake;
 mod webhook;
 
 /// The host of the server
-pub static HOST: Lazy<String> = Lazy::new(|| std::env::var("HOST").unwrap());
+pub static HOST: Lazy<String> = Lazy::new(|| std::env::var("TAMAKO_HOST").unwrap());
 /// The port of the server
-pub static PORT: Lazy<u16> = Lazy::new(|| std::env::var("PORT").unwrap().parse::<u16>().unwrap());
+pub static PORT: Lazy<u16> = Lazy::new(|| {
+    std::env::var("TAMAKO_PORT")
+        .unwrap()
+        .parse::<u16>()
+        .unwrap()
+});
 
 /// The snowflake generator
 static SNOWFLAKE: Lazy<snowflake::Snowflake> = Lazy::new(snowflake::Snowflake::new);
@@ -119,7 +124,11 @@ impl Private for Vec<Whisper> {
 }
 
 /// Authenticates the secret key
-pub async fn auth<T>(req: Request<T>) -> tide::Result<Response> {
+#[allow(clippy::unused_async, clippy::similar_names)]
+pub async fn auth<T>(req: Request<T>) -> tide::Result<Response>
+where
+    T: Send,
+{
     if !auth::validate_header(&req) {
         return Ok(Response::builder(StatusCode::Forbidden)
             .body("Invalid token")
@@ -133,6 +142,7 @@ pub async fn auth<T>(req: Request<T>) -> tide::Result<Response> {
 }
 
 /// Adds a new whisper
+#[allow(clippy::similar_names)]
 pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
     let mut whisper = req.body_json::<Whisper>().await?;
     if let Err(res) = whisper.validate() {
@@ -211,6 +221,7 @@ pub async fn get(req: Request<Database>) -> tide::Result<Body> {
 }
 
 /// Deletes a whisper
+#[allow(clippy::similar_names)]
 pub async fn delete(req: Request<Database>) -> tide::Result<Response> {
     if !auth::validate_header(&req) {
         return Err(tide::Error::from_str(

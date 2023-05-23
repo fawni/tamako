@@ -14,8 +14,8 @@ timeout = "2s"
 type = "tcp"
 
 [env]
-HOST = "0.0.0.0"
-PORT = "8714"
+TAMAKO_HOST = "0.0.0.0"
+TAMAKO_PORT = "8714"
 DATABASE_URL = "sqlite:/app/data/whispers.db"
 
 [mounts]

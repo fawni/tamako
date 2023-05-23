@@ -85,6 +85,10 @@ impl AuthTemplate {
 }
 
 /// Renders the auth page
-pub async fn auth<T>(_: Request<T>) -> tide::Result<Response> {
+#[allow(clippy::unused_async)]
+pub async fn auth<T>(_: Request<T>) -> tide::Result<Response>
+where
+    T: Send,
+{
     Ok(AuthTemplate::new().into())
 }
