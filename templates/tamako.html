@@ -2,32 +2,35 @@
 {% block title %} tamako {% endblock %}
 {% block head +%}
 <script>
-    const whisper = () => {
+    const whisper = async () => {
         let name = document.getElementById("name").value;
         let message = document.getElementById("message").value;
         let private = document.getElementById("private").checked;
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/whisper", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify({
-            name,
-            message,
-            private
-        }));
-        xhr.onload = () => {
-            if (xhr.status == 201) {
-                notyf.success("whisper sent");
-                setInterval(() => {
-                    window.location.reload();
-                }, 2100);
-            }
-            else if (xhr.status == 429) {
-                notyf.error("too many whispers, slow down");
-            }
-             else {
-                notyf.error(xhr.responseText);
-            }
-        };
+
+        let res = await fetch("/api/whisper", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                message,
+                private,
+            }),
+        });
+
+        if (res.ok) {
+            notyf.success("whisper sent");
+            setInterval(() => {
+                window.location.reload();
+            }, 2100);
+        }
+        else if (res.status == 429) {
+            notyf.error("too many whispers, slow down");
+        }
+        else {
+            notyf.error(await res.text());
+        }
     };
 </script>
 {% endblock %}

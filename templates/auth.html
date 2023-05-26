@@ -4,21 +4,23 @@
 
 {% block head %}
 <script>
-    const auth = () => {
+    const auth = async () => {
         let secret = document.getElementById("secret").value;
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/auth", true);
-        xhr.setRequestHeader("token", secret);
-        xhr.send();
-        xhr.onload = () => {
-            if (xhr.status == 200) {
-                document.cookie = `token=${secret};`;
-                window.location.href = "/";
-            }
-            else {
-                notyf.error(xhr.responseText);
-            }
-        };
+
+        let res = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+                "token": secret,
+            },
+        })
+
+        if (res.ok) {
+            document.cookie = `token=${secret};`;
+            window.location.href = "/";
+        }
+        else {
+            notyf.error(await res.text());
+        }
     };
 
     const logout = () => {
