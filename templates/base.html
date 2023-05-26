@@ -10,7 +10,7 @@
     <meta property="og:site_name" content="tamako" />
     <meta property="og:title" content="{% block title %}{% endblock %}" />
     <meta property="og:description" content="tamako is a cozy, minimalistic, single-user, anonymous whispers service" />
-    <meta property="og:image" content="/assets/tamako_smol.png">
+    <meta property="og:image" content="/assets/mascot.png">
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -108,6 +108,7 @@
             margin: 0;
         }
     </style>
+
     {% block head %}{% endblock ~%}
 </head>
 
@@ -116,17 +117,22 @@
         <h1>~{{user.name}}</h1>
         <blockquote>{{user.description}}</blockquote>
     </section>
+
     {% block body %}{% endblock +%}
+
     <hr>
+
     <footer>
         <div class="muted">tamako is a cozy, minimalistic, single-user, anonymous whispers service</div>
         <a href="/">home</a> |
         <a href="/auth">auth</a> |
         <a href="https://github.com/fawni/tamako">source code</a>
     </footer>
+
     <div id="mascot">
-        <img src="/assets/tamako_smol.png" alt="tamako mascot" />
+        <img src="/assets/mascot.png" alt="tamako mascot" />
     </div>
+
     <script type="application/javascript">
         var notyf = new Notyf({
             duration: 2000,
