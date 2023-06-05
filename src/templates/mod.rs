@@ -8,7 +8,7 @@ use crate::{
 
 /// The template that renders the whispers page
 #[derive(Template)]
-#[template(path = "tamako.html")]
+#[template(path = "home.html")]
 pub struct WhispersTemplate {
     /// The whispers to be rendered
     pub whispers: Vec<Whisper>,
@@ -22,11 +22,11 @@ pub struct WhispersTemplate {
 
 impl WhispersTemplate {
     /// Returns a new template with the given whispers
-    pub fn new(whispers: Vec<Whisper>, authenticated: bool, user: User) -> Self {
+    pub fn new(whispers: Vec<Whisper>, authenticated: bool) -> Self {
         Self {
             whispers,
             authenticated,
-            user,
+            user: User::read(),
         }
     }
 }
@@ -37,7 +37,7 @@ pub struct User {
 }
 
 impl User {
-    pub fn new() -> Self {
+    pub fn read() -> Self {
         Self {
             name: std::env::var("TAMAKO_USER_NAME").unwrap_or_else(|_| Self::default_name()),
             description: std::env::var("TAMAKO_USER_DESCRIPTION")
@@ -55,7 +55,7 @@ impl User {
 }
 
 /// Renders the whispers page
-pub async fn tamako(req: Request<Database>) -> tide::Result<Response> {
+pub async fn home(req: Request<Database>) -> tide::Result<Response> {
     let database = req.state();
     let authenticated = crate::auth::validate_cookie(&req);
     // If the user is authenticated, show all whispers, otherwise only show public whispers.
@@ -68,7 +68,7 @@ pub async fn tamako(req: Request<Database>) -> tide::Result<Response> {
     .rev()
     .collect::<Vec<Whisper>>();
 
-    Ok(WhispersTemplate::new(whispers, authenticated, User::new()).into())
+    Ok(WhispersTemplate::new(whispers, authenticated).into())
 }
 
 /// The template that renders the auth page
@@ -80,7 +80,7 @@ pub struct AuthTemplate {
 
 impl AuthTemplate {
     pub fn new() -> Self {
-        Self { user: User::new() }
+        Self { user: User::read() }
     }
 }
 

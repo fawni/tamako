@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" oncontextmenu="return false">
 
 <head>
     <title>{% block title %}{% endblock %}</title>
@@ -84,6 +84,13 @@
             user-select: none;
         }
 
+        .timestamp {
+            font-style: italic;
+            float: right;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
         .placeholder {
             font-style: italic;
             text-align: center;
@@ -135,7 +142,7 @@
 
     <script type="application/javascript">
         var notyf = new Notyf({
-            duration: 2000,
+            duration: 2500,
             position: {
                 x: 'right',
                 y: 'top',

@@ -87,7 +87,7 @@ impl Whisper {
     }
 
     /// Returns a pretty timestamp in the format: `dd MMM yyyy, hh:mm:ss a`
-    fn pretty_timestamp(&self) -> String {
+    pub fn pretty_timestamp(&self) -> String {
         DateTime::parse_from_rfc3339(&self.timestamp)
             .unwrap()
             .with_timezone(&Tz::Africa__Cairo)

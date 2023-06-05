@@ -12,7 +12,7 @@ async fn main() -> tide::Result<()> {
     let mut tamako = tide::with_state(database.clone());
     tamako.with(tide_compress::CompressMiddleware::new());
 
-    tamako.at("/").get(templates::tamako);
+    tamako.at("/").get(templates::home);
     tamako.at("/auth").get(templates::auth);
 
     tamako.at("/api").nest({

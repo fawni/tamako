@@ -16,6 +16,7 @@
 
         if (res.ok) {
             document.cookie = `token=${secret};`;
+            localStorage.setItem("token", secret);
             window.location.href = "/";
         }
         else {
@@ -25,6 +26,7 @@
 
     const logout = () => {
         document.cookie = "token=;";
+        localStorage.removeItem("token");
         window.location.href = "/";
     };
 </script>
