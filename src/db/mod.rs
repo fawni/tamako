@@ -76,7 +76,7 @@ impl DatabaseState {
 pub async fn open() -> tide::Result<Database> {
     Command::new("sqlx").args(["db", "create"]).output().await?;
     let database = Arc::new(DatabaseState::new().await?);
-    sqlx::migrate!("./migrations").run(&database.pool).await?;
+    sqlx::migrate!().run(&database.pool).await?;
 
     Ok(database)
 }

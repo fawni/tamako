@@ -6,6 +6,25 @@ use crate::{
     db::Database,
 };
 
+/// User information for the instance
+pub struct User {
+    /// The name of the user
+    pub name: String,
+
+    /// The description of the user
+    pub description: String,
+}
+
+impl Default for User {
+    fn default() -> Self {
+        Self {
+            name: std::env::var("TAMAKO_USER_NAME").unwrap_or_else(|_| "tamako".to_owned()),
+            description: std::env::var("TAMAKO_USER_DESCRIPTION")
+                .unwrap_or_else(|_| "Cozy anonymous whispers 🐞".to_owned()),
+        }
+    }
+}
+
 /// The template that renders the whispers page
 #[derive(Template)]
 #[template(path = "home.html")]
@@ -26,31 +45,8 @@ impl WhispersTemplate {
         Self {
             whispers,
             authenticated,
-            user: User::read(),
+            user: User::default(),
         }
-    }
-}
-
-pub struct User {
-    pub name: String,
-    pub description: String,
-}
-
-impl User {
-    pub fn read() -> Self {
-        Self {
-            name: std::env::var("TAMAKO_USER_NAME").unwrap_or_else(|_| Self::default_name()),
-            description: std::env::var("TAMAKO_USER_DESCRIPTION")
-                .unwrap_or_else(|_| Self::default_description()),
-        }
-    }
-
-    fn default_name() -> String {
-        "tamako".to_owned()
-    }
-
-    fn default_description() -> String {
-        "Cozy anonymous whispers 🐞".to_owned()
     }
 }
 
@@ -75,12 +71,16 @@ pub async fn home(req: Request<Database>) -> tide::Result<Response> {
 #[derive(Template)]
 #[template(path = "auth.html")]
 pub struct AuthTemplate {
+    /// The user of the instance
     pub user: User,
 }
 
 impl AuthTemplate {
+    /// Returns a new auth template
     pub fn new() -> Self {
-        Self { user: User::read() }
+        Self {
+            user: User::default(),
+        }
     }
 }
 
