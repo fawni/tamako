@@ -232,7 +232,10 @@ pub async fn delete(req: Request<Database>) -> tide::Result<Response> {
 
     let snowflake = req.param("snowflake")?;
     let database = req.state();
-    database.delete(snowflake).await?;
+    database
+        .delete(snowflake)
+        .await
+        .map_err(|_| tide::Error::from_str(tide::StatusCode::NotFound, "Whisper not found"))?;
 
     let mut res = Response::new(StatusCode::Ok);
     res.set_body(format!("Deleted {snowflake}"));

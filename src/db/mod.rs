@@ -23,7 +23,7 @@ impl DatabaseState {
     }
 
     /// Adds a whisper to the database
-    pub async fn add(&self, whisper: &Whisper) -> tide::Result<()> {
+    pub async fn add(&self, whisper: &Whisper) -> sqlx::Result<()> {
         sqlx::query!(
             "INSERT INTO whispers (name, message, private, snowflake, timestamp) VALUES (?, ?, ?, ?, ?)",
             whisper.name,
@@ -37,33 +37,29 @@ impl DatabaseState {
     }
 
     /// Lists all whispers from the database
-    pub async fn list(&self) -> tide::Result<Vec<Whisper>> {
-        let whispers = sqlx::query_as!(Whisper, "SELECT * FROM whispers")
+    pub async fn list(&self) -> sqlx::Result<Vec<Whisper>> {
+        sqlx::query_as!(Whisper, "SELECT * FROM whispers")
             .fetch_all(&self.pool)
-            .await?;
-
-        Ok(whispers)
+            .await
     }
 
     /// Gets a whisper from the database
-    pub async fn get(&self, snowflake: &str) -> tide::Result<Whisper> {
-        let whisper = sqlx::query_as!(
+    pub async fn get(&self, snowflake: &str) -> sqlx::Result<Whisper> {
+        sqlx::query_as!(
             Whisper,
             "SELECT * FROM whispers WHERE snowflake = ?",
             snowflake
         )
         .fetch_one(&self.pool)
-        .await?;
-
-        Ok(whisper)
+        .await
     }
 
     /// Deletes a whisper from the database
-    pub async fn delete(&self, snowflake: &str) -> tide::Result<()> {
+    pub async fn delete(&self, snowflake: &str) -> sqlx::Result<()> {
         sqlx::query!("SELECT * FROM whispers WHERE snowflake = ?", snowflake)
             .fetch_one(&self.pool)
-            .await
-            .map_err(|_| tide::Error::from_str(tide::StatusCode::NotFound, "Whisper not found"))?;
+            .await?;
+
         sqlx::query!("DELETE FROM whispers WHERE snowflake = ?", snowflake)
             .execute(&self.pool)
             .await?;
