@@ -1,4 +1,4 @@
-CREATE TABLE "whispers" (
+CREATE TABLE IF NOT EXISTS "whispers" (
 	"name" TEXT,
 	"message" TEXT NOT NULL,
 	"private" BOOLEAN NOT NULL,
