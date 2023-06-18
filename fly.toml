@@ -16,7 +16,7 @@ type = "tcp"
 [env]
 TAMAKO_HOST = "0.0.0.0"
 TAMAKO_PORT = "8714"
-DATABASE_URL = "sqlite:/app/data/whispers.db"
+# DATABASE_URL = "sqlite:/app/data/whispers.db"
 
 [mounts]
 source = "data"
