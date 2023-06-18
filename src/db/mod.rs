@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use async_std::process::Command;
-use sqlx::{Pool, Sqlite, SqlitePool};
+use sqlx::postgres::PgPool;
 
 use crate::api::Whisper;
 
@@ -11,21 +11,21 @@ pub type Database = Arc<DatabaseState>;
 /// The database state that holds the connection pool
 pub struct DatabaseState {
     /// The connection pool
-    pool: Pool<Sqlite>,
+    pool: PgPool
 }
 
 impl DatabaseState {
     /// Creates a new database state
     pub async fn new() -> tide::Result<Self> {
         Ok(Self {
-            pool: SqlitePool::connect(&std::env::var("DATABASE_URL")?).await?,
+            pool: PgPool::connect(&std::env::var("DATABASE_URL")?).await?,
         })
     }
 
     /// Adds a whisper to the database
     pub async fn add(&self, whisper: &Whisper) -> sqlx::Result<()> {
         sqlx::query!(
-            "INSERT INTO whispers (name, message, private, snowflake, timestamp) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO whispers (name, message, private, snowflake, timestamp) VALUES ($1, $2, $3, $4, $5)",
             whisper.name,
             whisper.message,
             whisper.private,
@@ -44,10 +44,10 @@ impl DatabaseState {
     }
 
     /// Gets a whisper from the database
-    pub async fn get(&self, snowflake: &str) -> sqlx::Result<Whisper> {
+    pub async fn get(&self, snowflake: i64) -> sqlx::Result<Whisper> {
         sqlx::query_as!(
             Whisper,
-            "SELECT * FROM whispers WHERE snowflake = ?",
+            "SELECT * FROM whispers WHERE snowflake = $1",
             snowflake
         )
         .fetch_one(&self.pool)
@@ -55,12 +55,12 @@ impl DatabaseState {
     }
 
     /// Deletes a whisper from the database
-    pub async fn delete(&self, snowflake: &str) -> sqlx::Result<()> {
-        sqlx::query!("SELECT * FROM whispers WHERE snowflake = ?", snowflake)
+    pub async fn delete(&self, snowflake: i64) -> sqlx::Result<()> {
+        sqlx::query!("SELECT * FROM whispers WHERE snowflake = $1", snowflake)
             .fetch_one(&self.pool)
             .await?;
 
-        sqlx::query!("DELETE FROM whispers WHERE snowflake = ?", snowflake)
+        sqlx::query!("DELETE FROM whispers WHERE snowflake = $1", snowflake)
             .execute(&self.pool)
             .await?;
 

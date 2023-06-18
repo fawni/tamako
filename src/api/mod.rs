@@ -213,7 +213,7 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
 
 /// Gets a whisper by its snowflake
 pub async fn get(req: Request<Database>) -> tide::Result<Body> {
-    let snowflake = req.param("snowflake")?;
+    let snowflake = req.param("snowflake")?.parse::<i64>()?;
     let database = req.state();
     let whisper = database.get(snowflake).await?;
 
@@ -230,7 +230,7 @@ pub async fn delete(req: Request<Database>) -> tide::Result<Response> {
         ));
     }
 
-    let snowflake = req.param("snowflake")?;
+    let snowflake = req.param("snowflake")?.parse::<i64>()?;
     let database = req.state();
     database
         .delete(snowflake)
