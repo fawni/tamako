@@ -3,15 +3,20 @@ package keys
 import "github.com/charmbracelet/bubbles/key"
 
 type Keymap struct {
-	Enter  key.Binding
-	Delete key.Binding
+	Copy    key.Binding
+	Refresh key.Binding
+	Delete  key.Binding
 }
 
 func NewKeymap() *Keymap {
 	return &Keymap{
-		Enter: key.NewBinding(
+		Copy: key.NewBinding(
 			key.WithKeys("enter"),
 			key.WithHelp("enter", "copy"),
+		),
+		Refresh: key.NewBinding(
+			key.WithKeys("r"),
+			key.WithHelp("r", "refresh"),
 		),
 		Delete: key.NewBinding(
 			key.WithKeys("delete"),

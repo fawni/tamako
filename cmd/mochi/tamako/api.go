@@ -80,9 +80,9 @@ func List(id int64, limit int) ([]Whisper, error) {
 		return []Whisper{}, err
 	}
 
-	for _, whisper := range whispers {
+	for i, whisper := range whispers {
 		if whisper.Name == "" {
-			whisper.Name = "anon"
+			whispers[i].Name = "anon"
 		}
 	}
 

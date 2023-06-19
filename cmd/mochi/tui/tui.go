@@ -25,7 +25,7 @@ func (t TUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch {
-		case key.Matches(msg, t.keys.Enter):
+		case key.Matches(msg, t.keys.Copy):
 			if t.list.SelectedItem() == nil {
 				break
 			}
@@ -34,6 +34,17 @@ func (t TUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				t.list.NewStatusMessage(styles.Error(err.Error()))
 			}
 			t.list.NewStatusMessage(styles.Success(fmt.Sprintf("copied whisper id: %d", whisper.Snowflake)))
+		case key.Matches(msg, t.keys.Refresh):
+			whispers, err := tamako.List(0, 0)
+			if err != nil {
+				t.list.NewStatusMessage(styles.Error(err.Error()))
+			}
+			items := make([]list.Item, 0, len(whispers))
+			for _, whisper := range whispers {
+				items = append(items, whisper)
+			}
+			t.list.SetItems(items)
+			t.list.NewStatusMessage(styles.Success("refreshed!"))
 		}
 	case tea.WindowSizeMsg:
 		h, v := styles.AppStyle.GetFrameSize()
@@ -61,10 +72,10 @@ func New(whispers []tamako.Whisper) TUI {
 	t.list.Styles.Title = styles.TitleStyle
 
 	t.list.AdditionalShortHelpKeys = func() []key.Binding {
-		return []key.Binding{t.keys.Enter}
+		return []key.Binding{t.keys.Copy, t.keys.Refresh}
 	}
 	t.list.AdditionalFullHelpKeys = func() []key.Binding {
-		return []key.Binding{t.keys.Enter, t.keys.Delete}
+		return []key.Binding{t.keys.Copy, t.keys.Refresh, t.keys.Delete}
 	}
 
 	return t
