@@ -49,7 +49,7 @@ func run(args []string) error {
 		defer output.Reset()
 		output.SetBackgroundColor(output.Color(styles.Black))
 
-		whispers, err := tamako.List(id, limit)
+		whispers, err := tamako.List(limit)
 		if err != nil {
 			return err
 		}

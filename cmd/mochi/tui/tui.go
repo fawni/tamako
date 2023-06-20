@@ -35,7 +35,7 @@ func (t TUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			t.list.NewStatusMessage(styles.Success(fmt.Sprintf("Copied whisper id %d", whisper.Snowflake)))
 		case key.Matches(msg, t.keys.Refresh):
-			whispers, err := tamako.List(0, 0)
+			whispers, err := tamako.List(0)
 			if err != nil {
 				t.list.NewStatusMessage(styles.Error(err.Error()))
 			}

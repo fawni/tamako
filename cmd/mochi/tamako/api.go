@@ -44,16 +44,11 @@ func Get(id int64) (Whisper, error) {
 	return whisper, nil
 }
 
-func List(id int64, limit int) ([]Whisper, error) {
+func List(limit int) ([]Whisper, error) {
 	req := gorequest.New()
 	var whispers []Whisper
 
-	var url string
-	if id != 0 {
-		url = fmt.Sprintf("%s/%d?pretty=true", BASE_API, id)
-	} else {
-		url = fmt.Sprintf("%s?pretty=true", BASE_API)
-	}
+	url := fmt.Sprintf("%s?pretty=true", BASE_API)
 	if limit != 0 {
 		url = fmt.Sprintf("%s&limit=%d", url, limit)
 	}
@@ -61,19 +56,6 @@ func List(id int64, limit int) ([]Whisper, error) {
 	_, body, errs := req.Get(url).End()
 	if errs != nil {
 		return []Whisper{}, errs[0]
-	}
-
-	if id != 0 {
-		var whisper Whisper
-		if err := json.Unmarshal([]byte(body), &whisper); err != nil {
-			return []Whisper{}, err
-		}
-
-		if whisper.Name == "" {
-			whisper.Name = "anon"
-		}
-
-		return []Whisper{whisper}, nil
 	}
 
 	if err := json.Unmarshal([]byte(body), &whispers); err != nil {
