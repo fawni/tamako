@@ -21,8 +21,8 @@ type Whisper struct {
 }
 
 func (w Whisper) Title() string       { return w.Message }
-func (w Whisper) Description() string { return w.Name }
-func (w Whisper) FilterValue() string { return fmt.Sprintf("%d", w.Snowflake) }
+func (w Whisper) Description() string { return fmt.Sprintf("%s • %s", w.Name, w.Timestamp) }
+func (w Whisper) FilterValue() string { return fmt.Sprintf("%s %s %d", w.Message, w.Name, w.Snowflake) }
 
 func Get(id int64) (Whisper, error) {
 	req := gorequest.New()

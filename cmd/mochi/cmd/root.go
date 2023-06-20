@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/fawni/mochi/tamako"
 	"github.com/fawni/mochi/tui"
+	"github.com/fawni/mochi/tui/minimal"
 	"github.com/fawni/mochi/tui/styles"
 	"github.com/muesli/termenv"
 	"github.com/spf13/cobra"
@@ -36,16 +37,26 @@ func Execute() {
 }
 
 func run(args []string) error {
-	output := termenv.NewOutput(os.Stdout)
-	defer output.Reset()
+	if id != 0 {
+		whisper, err := tamako.Get(id)
+		if err != nil {
+			return err
+		}
 
-	whispers, err := tamako.List(id, limit)
-	if err != nil {
-		return err
-	}
+		minimal.Render(whisper)
+	} else {
+		output := termenv.NewOutput(os.Stdout)
+		defer output.Reset()
+		output.SetBackgroundColor(output.Color(styles.Black))
 
-	if _, err := tea.NewProgram(tui.New(whispers), tea.WithAltScreen()).Run(); err != nil {
-		return err
+		whispers, err := tamako.List(id, limit)
+		if err != nil {
+			return err
+		}
+
+		if _, err := tea.NewProgram(tui.New(whispers), tea.WithAltScreen()).Run(); err != nil {
+			return err
+		}
 	}
 
 	return nil

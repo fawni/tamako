@@ -33,7 +33,7 @@ func (t TUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if err := clipboard.WriteAll(fmt.Sprintf("%d", whisper.Snowflake)); err != nil {
 				t.list.NewStatusMessage(styles.Error(err.Error()))
 			}
-			t.list.NewStatusMessage(styles.Success(fmt.Sprintf("copied whisper id: %d", whisper.Snowflake)))
+			t.list.NewStatusMessage(styles.Success(fmt.Sprintf("Copied whisper id %d", whisper.Snowflake)))
 		case key.Matches(msg, t.keys.Refresh):
 			whispers, err := tamako.List(0, 0)
 			if err != nil {
@@ -44,7 +44,7 @@ func (t TUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				items = append(items, whisper)
 			}
 			t.list.SetItems(items)
-			t.list.NewStatusMessage(styles.Success("refreshed!"))
+			t.list.NewStatusMessage(styles.Success("Refreshed"))
 		}
 	case tea.WindowSizeMsg:
 		h, v := styles.AppStyle.GetFrameSize()
@@ -70,6 +70,8 @@ func New(whispers []tamako.Whisper) TUI {
 	t := TUI{list: list.New(items, d, 0, 0), keys: keys.NewKeymap()}
 	t.list.Title = "tamako"
 	t.list.Styles.Title = styles.TitleStyle
+	t.list.Styles.FilterPrompt = t.list.Styles.FilterPrompt.Foreground(styles.Colors.Primary)
+	t.list.Styles.FilterCursor = t.list.Styles.FilterCursor.Foreground(styles.Colors.Primary)
 
 	t.list.AdditionalShortHelpKeys = func() []key.Binding {
 		return []key.Binding{t.keys.Copy, t.keys.Refresh}
