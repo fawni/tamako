@@ -91,6 +91,9 @@
 
                 {% if whisper.private %}
                     <li class="private">
+                {% else %}
+                    <li>
+                {% endif %}
                         <b class="whisperer">{{name~}}</b>: {{~message~}} <span class="timestamp muted"
                             title="{{whisper.snowflake}}"
                             onclick="copySnowflake('{{whisper.snowflake}}')"
@@ -98,15 +101,6 @@
                             {{whisper.pretty_timestamp()}}
                         </span>
                     </li>
-                {% else %}
-                    <li>
-                        <b class="whisperer">{{name~}}</b>: {{~message~}} <span class="timestamp muted"
-                            title="{{whisper.snowflake}}"
-                            onclick="copySnowflake('{{whisper.snowflake}}')"
-                            oncontextmenu="deleteWhisper('{{whisper.snowflake}}')">
-                            {{whisper.pretty_timestamp()}}
-                    </span></li>
-                {% endif %}
             {% endfor %}
         </ul>
     {% endif %}
