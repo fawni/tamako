@@ -8,22 +8,22 @@ import (
 )
 
 func Render(w tamako.Whisper) {
-	res := titleMargin(styles.TitleStyle.Render("tamako") + fmt.Sprintf(" - %s", mutedStyle(fmt.Sprintf("%d", w.Snowflake))))
-	res += textStyle(fmt.Sprintf("\n%s: %s", keyStyle("Name"), Name(w.Name)))
-	res += "\n"
-	res += textStyle(fmt.Sprintf("%s: %s", keyStyle("Message"), w.Message))
-	res += "\n"
-	res += textStyle(fmt.Sprintf("%s: %t", keyStyle("Private"), w.Private))
-	res += "\n"
-	res += textStyle(fmt.Sprintf("%s: %s", keyStyle("Timestamp"), w.Timestamp))
-	res += "\n"
+	res := titleMargin(styles.TitleStyle.Render("tamako") + fmt.Sprintf(" - %s", snowflakeStyle(fmt.Sprintf("%d", w.Snowflake))))
+	res += line("\nName", name(w.Name))
+	res += line("Message", w.Message)
+	res += line("Private", fmt.Sprintf("%t", w.Private))
+	res += line("Timestamp", w.Timestamp)
 
 	fmt.Println(res)
 }
 
-func Name(n string) string {
+func name(n string) string {
 	if n == "anon" {
 		return mutedStyle(n)
 	}
 	return n
+}
+
+func line(key string, value string) string {
+	return textStyle(fmt.Sprintf("%s: %s", keyStyle(key), value)) + "\n"
 }
