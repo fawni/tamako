@@ -97,7 +97,7 @@
                         <b class="whisperer">{{name~}}</b>: {{~message~}} <span class="timestamp muted"
                             title="{{whisper.snowflake}}"
                             onclick="copySnowflake('{{whisper.snowflake}}')"
-                            oncontextmenu="deleteWhisper('{{whisper.snowflake}}')">
+                            oncontextmenu="deleteWhisper('{{whisper.snowflake}}'); return false;">
                             {{whisper.pretty_timestamp()}}
                         </span>
                     </li>
