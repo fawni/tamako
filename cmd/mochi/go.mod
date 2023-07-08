@@ -1,4 +1,4 @@
-module github.com/fawni/mochi
+module github.com/fawni/tamako/cmd/mochi
 
 go 1.20
 

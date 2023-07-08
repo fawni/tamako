@@ -5,10 +5,10 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/fawni/mochi/tamako"
-	"github.com/fawni/mochi/tui"
-	"github.com/fawni/mochi/tui/minimal"
-	"github.com/fawni/mochi/tui/styles"
+	"github.com/fawni/tamako/cmd/mochi/tamako"
+	"github.com/fawni/tamako/cmd/mochi/tui"
+	"github.com/fawni/tamako/cmd/mochi/tui/minimal"
+	"github.com/fawni/tamako/cmd/mochi/tui/styles"
 	"github.com/muesli/termenv"
 	"github.com/spf13/cobra"
 )

@@ -7,9 +7,9 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/fawni/mochi/tamako"
-	"github.com/fawni/mochi/tui/keys"
-	"github.com/fawni/mochi/tui/styles"
+	"github.com/fawni/tamako/cmd/mochi/tamako"
+	"github.com/fawni/tamako/cmd/mochi/tui/keys"
+	"github.com/fawni/tamako/cmd/mochi/tui/styles"
 )
 
 type TUI struct {

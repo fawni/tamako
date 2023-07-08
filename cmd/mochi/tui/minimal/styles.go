@@ -2,7 +2,7 @@ package minimal
 
 import (
 	lg "github.com/charmbracelet/lipgloss"
-	"github.com/fawni/mochi/tui/styles"
+	"github.com/fawni/tamako/cmd/mochi/tui/styles"
 )
 
 var (

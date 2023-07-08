@@ -3,8 +3,8 @@ package minimal
 import (
 	"fmt"
 
-	"github.com/fawni/mochi/tamako"
-	"github.com/fawni/mochi/tui/styles"
+	"github.com/fawni/tamako/cmd/mochi/tamako"
+	"github.com/fawni/tamako/cmd/mochi/tui/styles"
 )
 
 func Render(w tamako.Whisper) {
