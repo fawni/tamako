@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM whispers WHERE snowflake = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e1f68ab0166b677606dabc5b32a4d8a6f32562857e13567236a43dce3cdb3844"
+}

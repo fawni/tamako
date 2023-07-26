@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM whispers WHERE snowflake = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "message",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "private",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "snowflake",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "timestamp",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      true,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "8d87fbf7c025101b8710fbfc1ff21cc7a1199ba9b21fd50c3ae583d83d827298"
+}

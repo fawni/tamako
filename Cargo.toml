@@ -20,7 +20,6 @@ askama_tide = "0.15.0"
 sqlx = { version = "0.7.1", features = [
     "postgres",
     "runtime-async-std-rustls",
-    "offline",
 ] }
 
 femme = "2.2.1"
