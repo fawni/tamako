@@ -1,7 +1,7 @@
 # tamako🐞
 
 [![crates.io](https://img.shields.io/crates/v/tamako.svg)](https://crates.io/crates/tamako)
-[![docs.rs](https://docs.rs/tamako/badge.svg)](https://docs.rs/tamako)
+[![dependency status](https://deps.rs/repo/github/fawni/tamako/status.svg)](https://deps.rs/repo/github/fawni/tamako)
 
 tamako is a cozy, minimalistic, single-user, _anonymous_ whispers service
 
