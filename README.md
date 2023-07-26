@@ -1,5 +1,55 @@
 # tamako🐞
 
-> Cozy anonymous whispers!
+[![crates.io](https://img.shields.io/crates/v/tamako.svg)](https://crates.io/crates/tamako)
+[![docs.rs](https://docs.rs/tamako/badge.svg)](https://docs.rs/tamako)
+
+tamako is a cozy, minimalistic, single-user, _anonymous_ whispers service
 
 ![scrot](.github/assets/scrot.png)
+
+## Prerequisites
+
+- [sqlx-cli](https://crates.io/crates/sqlx-cli)
+- a postgresql database
+
+## Environment variables
+
+| Name                      | Type   | Default                   | Notes                                                                                                              |
+| ------------------------- | ------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `TAMAKO_HOST`             | String | 127.0.0.1                 | the host to run the server on                                                                                      |
+| `TAMAKO_PORT`             | u16    | 8715                      | the port to serve the server on                                                                                    |
+| `DATABASE_URL`            | String | _none_                    | the database url. this should be a valid postgresql connection url                                                 |
+| `WEBHOOK_URL`             | String | _none_                    | _(optional)_ the discord webhook url. this will be used to send _private and public_ whispers to a discord channel |
+| `TAMAKO_SECRET`           | String | _none_                    | the secret key used for authentication. think of it like a master password                                         |
+| `TAMAKO_USER_NAME`        | String | tamako                    | _(optional)_ used in the fronted header                                                                            |
+| `TAMAKO_USER_DESCRIPTION` | String | Cozy anonymous whispers 🐞 | _(optional)_ used in the fronted header                                                                            |
+
+## Usage
+
+1. Clone the repo
+2. Rename `.env.example` to `.env` and change env variables inside it
+3. Build tamako: `cargo build --release`
+4. Run tamako: `./target/release/tamako`
+
+## TUI
+
+tamako comes with a pretty little tui frontend for it called mochi
+
+![mochi](.github/assets/mochi.png)
+
+### Installation
+
+```sh
+go install github.com/fawni/tamako/cmd/mochi@latest
+```
+### Usage
+
+```sh
+mochi --url https://tamako.pii.at
+```
+
+`mochi -h` for more info.
+
+## License
+
+[OSL-3.0](LICENSE)

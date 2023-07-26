@@ -1,6 +1,6 @@
 [package]
 name = "tamako"
-version = "0.2.0"
+version = "1.0.0"
 description = "Cozy anonymous whispers"
 authors = ["fawn <fawn@envs.net>"]
 repository = "https://github.com/fawni/tamako"

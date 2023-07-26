@@ -3,5 +3,5 @@
 .cargo
 
 # production
-.env
+*.env
 *.db*

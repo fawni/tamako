@@ -12,13 +12,14 @@ mod snowflake;
 mod webhook;
 
 /// The host of the server
-pub static HOST: Lazy<String> = Lazy::new(|| std::env::var("TAMAKO_HOST").unwrap());
+pub static HOST: Lazy<String> =
+    Lazy::new(|| std::env::var("TAMAKO_HOST").unwrap_or_else(|_| "127.0.0.1".to_owned()));
 /// The port of the server
 pub static PORT: Lazy<u16> = Lazy::new(|| {
     std::env::var("TAMAKO_PORT")
-        .unwrap()
+        .unwrap_or_else(|_| "8715".to_owned())
         .parse::<u16>()
-        .unwrap()
+        .unwrap_or(8715)
 });
 
 /// The snowflake generator

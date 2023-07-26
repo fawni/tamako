@@ -16,6 +16,7 @@ import (
 var (
 	id    int64
 	limit int
+	url   string
 
 	rootCmd = &cobra.Command{
 		Use:   "mochi",
@@ -38,7 +39,7 @@ func Execute() {
 
 func run(args []string) error {
 	if id != 0 {
-		whisper, err := tamako.Get(id)
+		whisper, err := tamako.Get(url, id)
 		if err != nil {
 			return err
 		}
@@ -49,12 +50,12 @@ func run(args []string) error {
 		defer output.Reset()
 		output.SetBackgroundColor(output.Color(styles.Black))
 
-		whispers, err := tamako.List(limit)
+		whispers, err := tamako.List(url, limit)
 		if err != nil {
 			return err
 		}
 
-		if _, err := tea.NewProgram(tui.New(whispers), tea.WithAltScreen()).Run(); err != nil {
+		if _, err := tea.NewProgram(tui.New(url, whispers), tea.WithAltScreen()).Run(); err != nil {
 			return err
 		}
 	}
@@ -65,4 +66,5 @@ func run(args []string) error {
 func init() {
 	rootCmd.Flags().Int64VarP(&id, "id", "i", 0, "Whisper Snowflake ID")
 	rootCmd.Flags().IntVarP(&limit, "limit", "l", 0, "Limit the number of whispers to return")
+	rootCmd.Flags().StringVarP(&url, "url", "u", "https://tamako.pii.at", "Base URL of tamako")
 }

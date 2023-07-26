@@ -7,7 +7,7 @@ app = "tamako"
 primary_region = "lhr"
 
 [checks.alive]
-port = "8714"
+port = "8715"
 grace_period = "5s"
 interval = "15s"
 timeout = "2s"
@@ -15,7 +15,7 @@ type = "tcp"
 
 [env]
 TAMAKO_HOST = "0.0.0.0"
-TAMAKO_PORT = "8714"
+TAMAKO_PORT = "8715"
 # DATABASE_URL = "sqlite:/app/data/whispers.db"
 
 [mounts]
@@ -25,7 +25,7 @@ destination = "/app/data"
 [[services]]
 auto_start_machines = true
 auto_stop_machines = true
-internal_port = 8714
+internal_port = 8715
 protocol = "tcp"
 force_https = true
 

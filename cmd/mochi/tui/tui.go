@@ -13,6 +13,7 @@ import (
 )
 
 type TUI struct {
+	url  string
 	list list.Model
 	keys *keys.Keymap
 }
@@ -35,7 +36,7 @@ func (t TUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			t.list.NewStatusMessage(styles.Success(fmt.Sprintf("Copied whisper id %d", whisper.Snowflake)))
 		case key.Matches(msg, t.keys.Refresh):
-			whispers, err := tamako.List(0)
+			whispers, err := tamako.List(t.url, 0)
 			if err != nil {
 				t.list.NewStatusMessage(styles.Error(err.Error()))
 			}
@@ -60,7 +61,7 @@ func (t TUI) View() string {
 	return styles.AppStyle.Render(t.list.View())
 }
 
-func New(whispers []tamako.Whisper) TUI {
+func New(url string, whispers []tamako.Whisper) TUI {
 	items := make([]list.Item, 0, len(whispers))
 	for _, whisper := range whispers {
 		items = append(items, whisper)
