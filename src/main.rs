@@ -35,7 +35,7 @@ async fn main() -> tide::Result<()> {
 
     tamako.at("/assets").serve_dir("assets")?;
 
-    let addr = (api::HOST.clone(), *api::PORT);
+    let addr = (api::HOST.as_str(), *api::PORT);
     tamako.listen(addr).await?;
 
     Ok(())
