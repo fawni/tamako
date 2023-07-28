@@ -1,4 +1,4 @@
-name: "Clippy lints"
+name: "Clippy"
 on:
   push:
   pull_request:
