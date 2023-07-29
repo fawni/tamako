@@ -92,3 +92,29 @@ where
 {
     Ok(AuthTemplate::new().into())
 }
+
+/// The template that renders the not found page
+#[derive(Template)]
+#[template(path = "404.html")]
+pub struct NotFoundTemplate {
+    /// The user of the instance
+    pub user: User,
+}
+
+impl NotFoundTemplate {
+    /// Returns a new not found template
+    pub fn new() -> Self {
+        Self {
+            user: User::default(),
+        }
+    }
+}
+
+/// Renders the not found page
+#[allow(clippy::unused_async)]
+pub async fn not_found<T>(_: Request<T>) -> tide::Result<Response>
+where
+    T: Send,
+{
+    Ok(NotFoundTemplate::new().into())
+}

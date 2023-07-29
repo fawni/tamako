@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %} tamako::not_found {% endblock %}
+
+{% block head %}
+<style>
+.error {
+    text-align: center;
+}
+
+h1.error {
+    font-size: 10rem;
+}
+
+.cute {
+    max-height: 350px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<h1 class="error">404</h1>
+<p class="error">I AM ERROR. <a href="/">Go back</a></p>
+<img src="/assets/cinnamoroll.png" class="cute" alt="cinnamoroll"></img>
+{% endblock %}
