@@ -9,33 +9,26 @@ async fn main() -> tide::Result<()> {
     dotenvy::dotenv().ok();
 
     let database = db::open().await?;
-    let mut tamako = tide::with_state(database.clone());
+    let mut tamako = tide::with_state(database);
     tamako.with(tide_compress::CompressMiddleware::new());
 
     tamako.at("/").get(templates::home);
     tamako.at("/auth").get(templates::auth);
-
-    tamako.at("/api").nest({
-        let mut api = tide::with_state(database);
-        api.with(tide_compress::CompressMiddleware::new());
-
-        api.at("/health").get(|_| async move { Ok("💚") });
-
-        api.at("/whisper").get(api::list);
-        api.at("/whisper/:snowflake").get(api::get);
-        api.at("/whisper")
-            .with(tide_governor::GovernorMiddleware::per_minute(2)?)
-            .post(api::add);
-        api.at("/whisper/:snowflake").delete(api::delete);
-
-        api.at("/auth").post(api::auth);
-
-        api
-    });
-
     tamako.at("/assets").serve_dir("assets")?;
-    tamako.at("*").get(templates::not_found);
 
+    tamako.at("/api/health").get(|_| async move { Ok("💚") });
+
+    tamako.at("/api/whisper").get(api::list);
+    tamako.at("/api/whisper/:snowflake").get(api::get);
+    tamako
+        .at("/api/whisper")
+        .with(tide_governor::GovernorMiddleware::per_minute(2)?)
+        .post(api::add);
+    tamako.at("/api/whisper/:snowflake").delete(api::delete);
+
+    tamako.at("/api/auth").post(api::auth);
+
+    tamako.at("*").get(templates::not_found);
     let addr = (api::HOST.as_str(), *api::PORT);
     tamako.listen(addr).await?;
 
