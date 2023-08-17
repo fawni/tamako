@@ -19,11 +19,9 @@
             }),
         });
 
-        if (res.ok) {
+        if (res.status == 201) {
             notyf.success("whisper sent");
-            setInterval(() => {
-                window.location.reload();
-            }, 2600);
+            window.location.reload();
         }
         else if (res.status == 429) {
             notyf.error("too many whispers, slow down");

@@ -1,6 +1,5 @@
 # rust
 /target
-.cargo
 
 # production
 *.env

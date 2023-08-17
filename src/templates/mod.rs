@@ -1,5 +1,5 @@
+use actix_web::{get, web, HttpRequest, Responder};
 use askama::Template;
-use tide::{Request, Response};
 
 use crate::{
     api::{Private, Whisper},
@@ -51,8 +51,11 @@ impl WhispersTemplate {
 }
 
 /// Renders the whispers page
-pub async fn home(req: Request<Database>) -> tide::Result<Response> {
-    let database = req.state();
+#[get("/")]
+pub async fn home(
+    req: HttpRequest,
+    database: web::Data<Database>,
+) -> Result<impl Responder, Box<dyn std::error::Error>> {
     let authenticated = crate::auth::validate_cookie(&req);
     // If the user is authenticated, show all whispers, otherwise only show public whispers.
     let whispers = if authenticated {
@@ -64,7 +67,7 @@ pub async fn home(req: Request<Database>) -> tide::Result<Response> {
     .rev()
     .collect::<Vec<Whisper>>();
 
-    Ok(WhispersTemplate::new(whispers, authenticated).into())
+    Ok(WhispersTemplate::new(whispers, authenticated))
 }
 
 /// The template that renders the auth page
@@ -85,12 +88,10 @@ impl AuthTemplate {
 }
 
 /// Renders the auth page
+#[get("/auth")]
 #[allow(clippy::unused_async)]
-pub async fn auth<T>(_: Request<T>) -> tide::Result<Response>
-where
-    T: Send,
-{
-    Ok(AuthTemplate::new().into())
+pub async fn auth() -> impl Responder {
+    AuthTemplate::new()
 }
 
 /// The template that renders the not found page
@@ -112,9 +113,6 @@ impl NotFoundTemplate {
 
 /// Renders the not found page
 #[allow(clippy::unused_async)]
-pub async fn not_found<T>(_: Request<T>) -> tide::Result<Response>
-where
-    T: Send,
-{
-    Ok(NotFoundTemplate::new().into())
+pub async fn not_found() -> impl Responder {
+    NotFoundTemplate::new()
 }

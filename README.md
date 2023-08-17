@@ -5,7 +5,7 @@
 
 tamako is a cozy, minimalistic, single-user, _anonymous_ whispers service
 
-![scrot](.github/assets/scrot.png)
+![scrot](meta/scrot.png)
 
 ## Prerequisites
 
@@ -35,7 +35,7 @@ tamako is a cozy, minimalistic, single-user, _anonymous_ whispers service
 
 tamako comes with a pretty little tui frontend for it called mochi
 
-![mochi](.github/assets/mochi.png)
+![mochi](meta/mochi.png)
 
 ### Installation
 

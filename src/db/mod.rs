@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use async_std::process::Command;
 use sqlx::postgres::PgPool;
+use tokio::process::Command;
 
 use crate::api::Whisper;
 
@@ -11,12 +11,12 @@ pub type Database = Arc<DatabaseState>;
 /// The database state that holds the connection pool
 pub struct DatabaseState {
     /// The connection pool
-    pool: PgPool
+    pool: PgPool,
 }
 
 impl DatabaseState {
     /// Creates a new database state
-    pub async fn new() -> tide::Result<Self> {
+    pub async fn new() -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self {
             pool: PgPool::connect(&std::env::var("DATABASE_URL")?).await?,
         })
@@ -69,7 +69,7 @@ impl DatabaseState {
 }
 
 /// Opens a connection to the database
-pub async fn open() -> tide::Result<Database> {
+pub async fn open() -> Result<Database, Box<dyn std::error::Error>> {
     Command::new("sqlx").args(["db", "create"]).output().await?;
     let database = Arc::new(DatabaseState::new().await?);
     sqlx::migrate!().run(&database.pool).await?;

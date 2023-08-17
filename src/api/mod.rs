@@ -1,10 +1,14 @@
-pub use async_std::main;
+pub use actix_web::main;
+use actix_web::{
+    delete,
+    error::{ErrorBadRequest, ErrorForbidden, ErrorNotFound},
+    get, post, web, HttpRequest, HttpResponse,
+};
 
 use chrono::{DateTime, Utc};
 use chrono_tz::Tz;
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
-use tide::{prelude::json, Body, Request, Response, StatusCode};
 
 use crate::{auth, db::Database};
 
@@ -49,24 +53,20 @@ pub struct Whisper {
 
 impl Whisper {
     /// Preforms basic validation checks for the whisper
-    fn validate(&mut self) -> Result<(), Response> {
-        self.name = self.name.take().filter(|name| !name.is_empty());
+    fn validate(&mut self) -> actix_web::Result<()> {
+        self.name.take().filter(|name| !name.is_empty());
         if self.message.is_empty() {
-            return Err(Response::builder(StatusCode::BadRequest)
-                .body("whispers cannot be empty")
-                .build());
+            return Err(ErrorBadRequest("whispers cannot be empty"));
         }
         if let Some(name) = &self.name {
             if name.len() > 32 {
-                return Err(Response::builder(StatusCode::BadRequest)
-                    .body("name cannot be longer than 32 characters")
-                    .build());
+                return Err(ErrorBadRequest("name cannot be longer than 32 characters"));
             }
         }
         if self.message.len() > 1024 {
-            return Err(Response::builder(StatusCode::BadRequest)
-                .body("whispers cannot be longer than 1024 characters")
-                .build());
+            return Err(ErrorBadRequest(
+                "whispers cannot be longer than 1024 characters",
+            ));
         }
 
         Ok(())
@@ -125,48 +125,37 @@ impl Private for Vec<Whisper> {
 }
 
 /// Authenticates the secret key
-#[allow(clippy::unused_async, clippy::similar_names)]
-pub async fn auth<T>(req: Request<T>) -> tide::Result<Response>
-where
-    T: Send,
-{
+#[allow(clippy::unused_async)]
+#[post("/api/auth")]
+pub async fn authentication(req: HttpRequest) -> actix_web::Result<HttpResponse> {
     if !auth::validate_header(&req) {
-        return Ok(Response::builder(StatusCode::Forbidden)
-            .body("Invalid token")
-            .build());
+        return Err(ErrorForbidden("Invalid token"));
     }
 
-    let mut res = Response::new(StatusCode::Ok);
-    res.set_body("Authenticated");
-
-    Ok(res)
+    Ok(HttpResponse::Ok().body("Authenticated"))
 }
 
 /// Adds a new whisper
-#[allow(clippy::similar_names)]
-pub async fn add(mut req: Request<Database>) -> tide::Result<Response> {
-    let mut whisper = req.body_json::<Whisper>().await?;
-    if let Err(res) = whisper.validate() {
-        return Ok(res);
-    }
+// #[post("/")]
+pub async fn add(
+    database: web::Data<Database>,
+    mut whisper: web::Json<Whisper>,
+) -> Result<HttpResponse, Box<dyn std::error::Error>> {
+    whisper.validate()?;
 
-    let database = req.state();
     database.add(&whisper).await?;
     match webhook::send(&whisper).await {
-        Ok(_) => tide::log::info!("--> Webhook sent"),
-        Err(e) => tide::log::error!("Webhook error --> {e}"),
+        Ok(_) => log::info!("Webhook sent successfully"),
+        Err(e) => log::error!("Webhook error: {e}"),
     };
 
-    let mut res = Response::new(StatusCode::Created);
-    res.set_body(json!(&whisper));
-
-    Ok(res)
+    Ok(HttpResponse::Created().json(whisper))
 }
 
 #[derive(Deserialize, Default)]
 #[serde(default)]
 /// Query params for the list endpoint
-struct ListParams {
+pub struct ListParams {
     /// The number of whispers to return
     limit: Option<usize>,
 
@@ -178,8 +167,12 @@ struct ListParams {
 }
 
 /// Lists all whispers
-pub async fn list(req: Request<Database>) -> tide::Result<Body> {
-    let database = req.state();
+#[get("/api/whisper")]
+pub async fn list(
+    req: HttpRequest,
+    params: web::Query<ListParams>,
+    database: web::Data<Database>,
+) -> Result<HttpResponse, Box<dyn std::error::Error>> {
     let mut whispers = database.list().await?;
 
     // Filter out private whispers if the token is invalid or not provided
@@ -189,8 +182,6 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
 
     // Reverse the order of the whispers so that the latest whispers are at the top
     whispers.reverse();
-
-    let params = req.query::<ListParams>()?;
 
     // Skip `n` whispers if the `offset` param is provided
     if let Some(n) = params.offset {
@@ -209,37 +200,38 @@ pub async fn list(req: Request<Database>) -> tide::Result<Body> {
             .for_each(|w| w.timestamp = w.pretty_timestamp());
     }
 
-    Body::from_json(&whispers)
+    Ok(HttpResponse::Ok().json(whispers))
 }
 
 /// Gets a whisper by its snowflake
-pub async fn get(req: Request<Database>) -> tide::Result<Body> {
-    let snowflake = req.param("snowflake")?.parse::<i64>()?;
-    let database = req.state();
+#[get("/api/whisper/{snowflake}")]
+pub async fn get(
+    path: web::Path<i64>,
+    database: web::Data<Database>,
+) -> Result<HttpResponse, Box<dyn std::error::Error>> {
+    let snowflake = path.into_inner();
     let whisper = database.get(snowflake).await?;
 
-    Body::from_json(&whisper)
+    Ok(HttpResponse::Ok().json(whisper))
 }
 
 /// Deletes a whisper
-#[allow(clippy::similar_names)]
-pub async fn delete(req: Request<Database>) -> tide::Result<Response> {
+#[delete("/api/whisper/{snowflake}")]
+pub async fn delete(
+    req: HttpRequest,
+    path: web::Path<i64>,
+    database: web::Data<Database>,
+) -> Result<HttpResponse, Box<dyn std::error::Error>> {
     if !auth::validate_header(&req) {
-        return Err(tide::Error::from_str(
-            StatusCode::Forbidden,
-            "Invalid token",
-        ));
+        return Err(actix_web::error::ErrorForbidden("Invalid token").into());
     }
 
-    let snowflake = req.param("snowflake")?.parse::<i64>()?;
-    let database = req.state();
+    let snowflake = path.into_inner();
+
     database
         .delete(snowflake)
         .await
-        .map_err(|_| tide::Error::from_str(tide::StatusCode::NotFound, "Whisper not found"))?;
+        .map_err(|_| ErrorNotFound(format!("Whisper {snowflake} not found")))?;
 
-    let mut res = Response::new(StatusCode::Ok);
-    res.set_body(format!("Deleted {snowflake}"));
-
-    Ok(res)
+    Ok(HttpResponse::Ok().body(format!("Deleted {snowflake}")))
 }
