@@ -16,7 +16,7 @@ pub struct DatabaseState {
 
 impl DatabaseState {
     /// Creates a new database state
-    pub async fn new() -> Result<Self, Box<dyn std::error::Error>> {
+    pub async fn new() -> eyre::Result<Self> {
         Ok(Self {
             pool: PgPool::connect(&std::env::var("DATABASE_URL")?).await?,
         })
@@ -69,7 +69,7 @@ impl DatabaseState {
 }
 
 /// Opens a connection to the database
-pub async fn open() -> Result<Database, Box<dyn std::error::Error>> {
+pub async fn open() -> eyre::Result<Database> {
     Command::new("sqlx").args(["db", "create"]).output().await?;
     let database = Arc::new(DatabaseState::new().await?);
     sqlx::migrate!().run(&database.pool).await?;

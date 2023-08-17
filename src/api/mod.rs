@@ -136,7 +136,6 @@ pub async fn authentication(req: HttpRequest) -> actix_web::Result<HttpResponse>
 }
 
 /// Adds a new whisper
-// #[post("/")]
 pub async fn add(
     database: web::Data<Database>,
     mut whisper: web::Json<Whisper>,
