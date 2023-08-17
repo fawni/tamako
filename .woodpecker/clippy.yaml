@@ -1,5 +1,5 @@
 steps:
-  test:
+  clippy:
     image: rust
     environment: [CARGO_TERM_COLOR=always]
     commands:
