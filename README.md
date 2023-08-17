@@ -1,7 +1,8 @@
 # tamako🐞
 
+[![status-badge](https://ci.codeberg.org/api/badges/12523/status.svg)](https://ci.codeberg.org/repos/12523)
 [![crates.io](https://img.shields.io/crates/v/tamako.svg)](https://crates.io/crates/tamako)
-[![dependency status](https://deps.rs/repo/github/fawni/tamako/status.svg)](https://deps.rs/repo/github/fawni/tamako)
+[![dependency status](https://deps.rs/repo/codeberg/fawn/tamako/status.svg)](https://deps.rs/repo/codeberg/fawn/tamako)
 
 tamako is a cozy, minimalistic, single-user, _anonymous_ whispers service
 
