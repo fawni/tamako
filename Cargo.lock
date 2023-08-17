@@ -95,9 +95,9 @@ dependencies = [
 
 [[package]]
 name = "actix-logger"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "368801d124d79d28f83a2d5d3b2b4bbf0e461525e78e88ae291885f134e3a58d"
+checksum = "738c27c7f5b8478246c98404c0975b88429191a2bfbfc19a8ec709c40f566697"
 dependencies = [
  "actix-http",
  "actix-rt",

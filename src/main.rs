@@ -14,7 +14,7 @@ async fn main() -> eyre::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(database.clone()))
-            .wrap(actix_logger::middleware::Logger::default())
+            .wrap(actix_logger::Logger::default())
             .wrap(middleware::Compress::default())
             .wrap(middleware::NormalizePath::new(
                 middleware::TrailingSlash::Trim,
