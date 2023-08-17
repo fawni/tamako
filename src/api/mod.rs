@@ -54,7 +54,7 @@ pub struct Whisper {
 impl Whisper {
     /// Preforms basic validation checks for the whisper
     fn validate(&mut self) -> actix_web::Result<()> {
-        self.name.take().filter(|name| !name.is_empty());
+        self.name = self.name.take().filter(|name| !name.is_empty());
         if self.message.is_empty() {
             return Err(ErrorBadRequest("whispers cannot be empty"));
         }

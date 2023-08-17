@@ -31,7 +31,7 @@ async fn main() -> eyre::Result<()> {
                     .wrap(actix_governor::Governor::new(
                         &actix_governor::GovernorConfigBuilder::default()
                             .per_second(360)
-                            .burst_size(1)
+                            .burst_size(2)
                             .finish()
                             .unwrap_or_default(),
                     )),
