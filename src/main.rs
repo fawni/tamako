@@ -7,14 +7,16 @@ mod templates;
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
-    femme::start();
+    twink::log::setup();
     dotenvy::dotenv().ok();
 
     let database = db::open().await?;
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(database.clone()))
-            .wrap(actix_logger::Logger::default())
+            .wrap(actix_logger::Logger::new(twink::fmt!(
+                "<green>%s <purple>%r</> took <cyan>%Dms</> | %{X-Forwarded-For}i <i>%{User-Agent}i</>"
+            )))
             .wrap(middleware::Compress::default())
             .wrap(middleware::NormalizePath::new(
                 middleware::TrailingSlash::Trim,
