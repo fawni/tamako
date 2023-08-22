@@ -10,3 +10,7 @@ setup:
 # Exessive clippy lints
 lint:
     cargo clippy --locked -- -W clippy::pedantic -W clippy::nursery
+
+push:
+    git push
+    git push gh
