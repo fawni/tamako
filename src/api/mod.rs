@@ -1,10 +1,8 @@
-pub use actix_web::main;
 use actix_web::{
     delete,
     error::{ErrorBadRequest, ErrorForbidden, ErrorNotFound},
     get, post, web, HttpRequest, HttpResponse,
 };
-
 use chrono::{DateTime, Utc};
 use chrono_tz::Tz;
 use once_cell::sync::Lazy;
@@ -14,6 +12,8 @@ use crate::{auth, db::Database};
 
 mod snowflake;
 mod webhook;
+
+use self::snowflake::Snowflake;
 
 /// The host of the server
 pub static HOST: Lazy<String> =
@@ -27,7 +27,13 @@ pub static PORT: Lazy<u16> = Lazy::new(|| {
 });
 
 /// The snowflake generator
-static SNOWFLAKE: Lazy<snowflake::Snowflake> = Lazy::new(snowflake::Snowflake::new);
+static SNOWFLAKE: Lazy<Snowflake> = Lazy::new(Snowflake::new);
+
+macro_rules! bail {
+    ($e:expr) => {
+        return Err($e);
+    };
+}
 
 /// The representation of a whisper
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -56,15 +62,15 @@ impl Whisper {
     fn validate(&mut self) -> actix_web::Result<()> {
         self.name = self.name.take().filter(|name| !name.is_empty());
         if self.message.is_empty() {
-            return Err(ErrorBadRequest("whispers cannot be empty"));
+            bail!(ErrorBadRequest("whispers cannot be empty"));
         }
         if let Some(name) = &self.name {
             if name.len() > 32 {
-                return Err(ErrorBadRequest("name cannot be longer than 32 characters"));
+                bail!(ErrorBadRequest("name cannot be longer than 32 characters"));
             }
         }
         if self.message.len() > 1024 {
-            return Err(ErrorBadRequest(
+            bail!(ErrorBadRequest(
                 "whispers cannot be longer than 1024 characters",
             ));
         }
@@ -124,15 +130,15 @@ impl Private for Vec<Whisper> {
     }
 }
 
-/// Authenticates the secret key
+/// Validates the secret key
 #[allow(clippy::unused_async)]
 #[post("/api/auth")]
 pub async fn authentication(req: HttpRequest) -> actix_web::Result<HttpResponse> {
     if !auth::validate_header(&req) {
-        return Err(ErrorForbidden("Invalid token"));
+        bail!(ErrorForbidden("Invalid token"));
     }
 
-    Ok(HttpResponse::Ok().body("Authenticated"))
+    Ok(HttpResponse::Ok().body("Validated"))
 }
 
 /// Adds a new whisper
@@ -222,11 +228,10 @@ pub async fn delete(
     database: web::Data<Database>,
 ) -> Result<HttpResponse, Box<dyn std::error::Error>> {
     if !auth::validate_header(&req) {
-        return Err(actix_web::error::ErrorForbidden("Invalid token").into());
+        bail!(Box::new(ErrorForbidden("Invalid token")));
     }
 
     let snowflake = path.into_inner();
-
     database
         .delete(snowflake)
         .await

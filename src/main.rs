@@ -1,4 +1,10 @@
-use actix_web::{middleware, web, App, HttpServer};
+use actix_files::Files;
+use actix_governor::{Governor, GovernorConfigBuilder};
+use actix_web::{
+    http::StatusCode,
+    middleware::{Compress, ErrorHandlers, NormalizePath, TrailingSlash},
+    web, App, HttpServer,
+};
 
 mod api;
 mod auth;
@@ -17,21 +23,20 @@ async fn main() -> eyre::Result<()> {
             .wrap(actix_logger::Logger::new(twink::fmt!(
                 "<green>%s <purple>%r</> took <cyan>%Dms</> | %{X-Forwarded-For}i <i>%{User-Agent}i</>"
             )))
-            .wrap(middleware::Compress::default())
-            .wrap(middleware::NormalizePath::new(
-                middleware::TrailingSlash::Trim,
-            ))
+            .wrap(Compress::default())
+            .wrap(NormalizePath::new(TrailingSlash::Trim))
+            .wrap(ErrorHandlers::new().handler(StatusCode::NOT_FOUND, templates::not_found))
             .service(templates::home)
             .service(templates::auth)
-            .service(actix_files::Files::new("/assets", "assets"))
+            .service(Files::new("/assets", "assets"))
             .service(web::resource("/api/health").route(web::get().to(|| async { "💚" })))
             .service(api::list)
             .service(api::get)
             .service(
                 web::resource("/api/whisper")
                     .route(web::post().to(api::add))
-                    .wrap(actix_governor::Governor::new(
-                        &actix_governor::GovernorConfigBuilder::default()
+                    .wrap(Governor::new(
+                        &GovernorConfigBuilder::default()
                             .per_second(360)
                             .burst_size(2)
                             .finish()
@@ -40,7 +45,6 @@ async fn main() -> eyre::Result<()> {
             )
             .service(api::delete)
             .service(api::authentication)
-            .default_service(web::to(templates::not_found))
     })
     .bind((api::HOST.as_str(), *api::PORT))?
     .run()

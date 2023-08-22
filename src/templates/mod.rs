@@ -1,4 +1,7 @@
-use actix_web::{get, web, HttpRequest, Responder};
+use actix_web::{
+    dev::ServiceResponse, get, middleware::ErrorHandlerResponse, web, HttpRequest, HttpResponse,
+    Responder,
+};
 use askama::Template;
 
 use crate::{
@@ -112,7 +115,12 @@ impl NotFoundTemplate {
 }
 
 /// Renders the not found page
-#[allow(clippy::unused_async)]
-pub async fn not_found() -> impl Responder {
-    NotFoundTemplate::new()
+#[allow(clippy::unnecessary_wraps)]
+pub fn not_found<B>(res: ServiceResponse<B>) -> actix_web::Result<ErrorHandlerResponse<B>> {
+    Ok(ErrorHandlerResponse::Response(ServiceResponse::new(
+        res.into_parts().0,
+        HttpResponse::NotFound()
+            .body(NotFoundTemplate::new().render().unwrap())
+            .map_into_right_body(),
+    )))
 }
