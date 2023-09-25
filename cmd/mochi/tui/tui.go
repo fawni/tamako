@@ -18,8 +18,8 @@ type TUI struct {
 	keys *keys.Keymap
 }
 
-func (t TUI) Init() tea.Cmd {
-	return nil
+func (TUI) Init() tea.Cmd {
+	return tea.EnterAltScreen
 }
 
 func (t TUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -30,23 +30,29 @@ func (t TUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if t.list.SelectedItem() == nil {
 				break
 			}
+
 			whisper := t.list.SelectedItem().(tamako.Whisper)
 			if err := clipboard.WriteAll(fmt.Sprintf("%d", whisper.Snowflake)); err != nil {
-				t.list.NewStatusMessage(styles.Error(err.Error()))
+				return t, tea.Cmd(t.list.NewStatusMessage(styles.Error(err.Error())))
 			}
-			t.list.NewStatusMessage(styles.Success(fmt.Sprintf("Copied whisper id %d", whisper.Snowflake)))
+
+			return t, tea.Cmd(t.list.NewStatusMessage(styles.Success(fmt.Sprintf("Copied whisper id %d", whisper.Snowflake))))
+
 		case key.Matches(msg, t.keys.Refresh):
 			whispers, err := tamako.List(t.url, 0)
 			if err != nil {
-				t.list.NewStatusMessage(styles.Error(err.Error()))
+				return t, tea.Cmd(t.list.NewStatusMessage(t.url))
 			}
+
 			items := make([]list.Item, 0, len(whispers))
 			for _, whisper := range whispers {
 				items = append(items, whisper)
 			}
-			t.list.SetItems(items)
-			t.list.NewStatusMessage(styles.Success("Refreshed"))
+
+			return t, tea.Batch(t.list.SetItems(items),
+				t.list.NewStatusMessage(styles.Success("Refreshed")))
 		}
+
 	case tea.WindowSizeMsg:
 		h, v := styles.AppStyle.GetFrameSize()
 		t.list.SetSize(msg.Width-h, msg.Height-v)
@@ -54,7 +60,8 @@ func (t TUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	var cmd tea.Cmd
 	t.list, cmd = t.list.Update(msg)
-	return t, cmd
+
+	return t, tea.Cmd(cmd)
 }
 
 func (t TUI) View() string {
@@ -67,19 +74,15 @@ func New(url string, whispers []tamako.Whisper) TUI {
 		items = append(items, whisper)
 	}
 
-	d := styles.NewListDelegate()
-	t := TUI{list: list.New(items, d, 0, 0), keys: keys.NewKeymap()}
-	t.list.Title = "tamako"
-	t.list.Styles.Title = styles.TitleStyle
-	t.list.Styles.FilterPrompt = t.list.Styles.FilterPrompt.Foreground(styles.Colors.Primary)
-	t.list.Styles.FilterCursor = t.list.Styles.FilterCursor.Foreground(styles.Colors.Primary)
+	delegate := styles.NewListDelegate()
+	tui := TUI{url: url, list: list.New(items, delegate, 0, 0), keys: keys.NewKeymap()}
+	tui.list.Title = "tamako"
+	tui.list.Styles.Title = styles.TitleStyle
+	tui.list.Styles.FilterPrompt = tui.list.Styles.FilterPrompt.Foreground(styles.Colors.Primary)
+	tui.list.Styles.FilterCursor = tui.list.Styles.FilterCursor.Foreground(styles.Colors.Primary)
 
-	t.list.AdditionalShortHelpKeys = func() []key.Binding {
-		return []key.Binding{t.keys.Copy, t.keys.Refresh}
-	}
-	t.list.AdditionalFullHelpKeys = func() []key.Binding {
-		return []key.Binding{t.keys.Copy, t.keys.Refresh, t.keys.Delete}
-	}
+	tui.list.AdditionalShortHelpKeys = func() []key.Binding { return []key.Binding{tui.keys.Copy, tui.keys.Refresh} }
+	tui.list.AdditionalFullHelpKeys = func() []key.Binding { return []key.Binding{tui.keys.Copy, tui.keys.Refresh, tui.keys.Delete} }
 
-	return t
+	return tui
 }

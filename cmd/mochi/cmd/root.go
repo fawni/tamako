@@ -30,6 +30,12 @@ var (
 	}
 )
 
+func init() {
+	rootCmd.Flags().Int64VarP(&id, "id", "i", 0, "Whisper Snowflake ID")
+	rootCmd.Flags().IntVarP(&limit, "limit", "l", 0, "Limit the number of whispers to return")
+	rootCmd.Flags().StringVarP(&url, "url", "u", "https://tamako.pii.at", "Base URL of tamako")
+}
+
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(styles.Error(err.Error()))
@@ -55,16 +61,10 @@ func run(args []string) error {
 			return err
 		}
 
-		if _, err := tea.NewProgram(tui.New(url, whispers), tea.WithAltScreen()).Run(); err != nil {
+		if _, err := tea.NewProgram(tui.New(url, whispers)).Run(); err != nil {
 			return err
 		}
 	}
 
 	return nil
-}
-
-func init() {
-	rootCmd.Flags().Int64VarP(&id, "id", "i", 0, "Whisper Snowflake ID")
-	rootCmd.Flags().IntVarP(&limit, "limit", "l", 0, "Limit the number of whispers to return")
-	rootCmd.Flags().StringVarP(&url, "url", "u", "https://tamako.pii.at", "Base URL of tamako")
 }
