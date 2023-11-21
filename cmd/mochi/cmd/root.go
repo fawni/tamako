@@ -33,7 +33,7 @@ var (
 func init() {
 	rootCmd.Flags().Int64VarP(&id, "id", "i", 0, "Whisper Snowflake ID")
 	rootCmd.Flags().IntVarP(&limit, "limit", "l", 0, "Limit the number of whispers to return")
-	rootCmd.Flags().StringVarP(&url, "url", "u", "https://tamako.pii.at", "Base URL of tamako")
+	rootCmd.Flags().StringVarP(&url, "url", "u", "https://tamako.fawn.moe", "Base URL of tamako")
 }
 
 func Execute() {

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-// BASE_URL = "https://tamako.pii.at"
+// BASE_URL = "https://tamako.fawn.moe"
 // BASE_API = BASE_URL + "/api/whisper"
 )
 

@@ -46,7 +46,7 @@ go install github.com/fawni/tamako/cmd/mochi@latest
 ### Usage
 
 ```sh
-mochi --url https://tamako.pii.at
+mochi --url https://tamako.fawn.moe
 ```
 
 `mochi -h` for more info.

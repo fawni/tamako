@@ -8,26 +8,26 @@ license = "OSL-3.0"
 edition = "2021"
 
 [dependencies]
-tokio = { version = "1.32.0", features = ["full"] }
+tokio = { version = "1.34.0", features = ["full"] }
 
-actix-web = "4.3.1"
+actix-web = "4.4.0"
 actix-files = "0.6.2"
-actix-governor = "0.4.1"
+actix-governor = "0.5.0"
 actix-logger = "0.4.1"
 
-askama = { version = "0.12.0", features = ["with-actix-web"] }
+askama = { version = "0.12.1", features = ["with-actix-web"] }
 askama_actix = "0.14.0"
 
-sqlx = { version = "0.7.1", features = ["postgres", "runtime-tokio-rustls"] }
+sqlx = { version = "0.7.2", features = ["postgres", "runtime-tokio-rustls"] }
 
-serde = { version = "1.0.183", features = ["derive"] }
-twink = { version = "1.1.0", features = ["12-hour", "log"] }
+serde = { version = "1.0.193", features = ["derive"] }
+twink = { version = "1.1.2", features = ["12-hour", "log"] }
 log = "0.4.20"
-eyre = { version = "0.6.8" }
+eyre = { version = "0.6.9" }
 dotenvy = "0.15.7"
 
-chrono = "0.4.26"
-chrono-tz = "0.8.3"
+chrono = "0.4.31"
+chrono-tz = "0.8.4"
 
 webhook = "2.1.2"
 rs-snowflake = "0.6.0"

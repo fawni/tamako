@@ -1,5 +1,7 @@
-{% extends "base.html" %}
+{% extends "layout/base.html" %}
+
 {% block title %} tamako {% endblock %}
+
 {% block head +%}
 <script>
     const whisper = async () => {
@@ -85,14 +87,13 @@
         <ul>
             {% for whisper in whispers %}
                 {% let name = whisper.name.clone().unwrap_or("anon".to_owned()) %}
-                {% let message = whisper.message.clone() %}
 
                 {% if whisper.private %}
                     <li class="private">
                 {% else %}
                     <li>
                 {% endif %}
-                        <b class="whisperer">{{name~}}</b>: {{~message~}} <span class="timestamp muted"
+                        <b class="whisperer">{{name~}}</b>: {{~whisper.message~}} <span class="timestamp muted"
                             title="{{whisper.snowflake}}"
                             onclick="copySnowflake('{{whisper.snowflake}}')"
                             oncontextmenu="deleteWhisper('{{whisper.snowflake}}'); return false;">
