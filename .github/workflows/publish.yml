@@ -1,0 +1,19 @@
+name: Push latest image to ghcr
+on:
+    push:
+        branches:
+            - master
+    workflow_dispatch:
+
+jobs:
+    publish:
+        name: Publish tamako
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Push latest to ghcr
+              uses: macbre/push-to-ghcr@master
+              with:
+                  image_name: fawni/tamako
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
