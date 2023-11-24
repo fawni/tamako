@@ -1,27 +1,28 @@
 version: "3.9"
 services:
-  api:
-    image: fawn/tamako
-    build: .
-    restart: unless-stopped
-    env_file:
-      - docker.env
-    ports:
-      - "8718:8715"
-    depends_on:
-      - db
-    networks:
-      - tamako
-
   db:
     image: postgres
     restart: unless-stopped
     env_file:
       - pg.env
     ports:
-      - "54328:5432"
+      - "5432"
     volumes:
       - tamakodb:/var/lib/postgresql/data
+    networks:
+      - tamako
+
+  web:
+    image: ghcr.io/fawni/tamako
+    # build the image locally instead of pulling - dev
+    # build: .
+    restart: unless-stopped
+    env_file:
+      - docker.env
+    ports:
+      - "8715:8715"
+    depends_on:
+      - db
     networks:
       - tamako
 

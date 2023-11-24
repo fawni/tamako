@@ -25,12 +25,31 @@ tamako is a cozy, minimalistic, single-user, _anonymous_ whispers service
 | `TAMAKO_USER_NAME`        | String | tamako                    | _(optional)_ used in the fronted header                                                                            |
 | `TAMAKO_USER_DESCRIPTION` | String | Cozy anonymous whispers 🐞 | _(optional)_ used in the fronted header                                                                            |
 
-## Usage
+## Installation
+
+### Docker Compose (recommended)
+
+Docker compose will also create a postgres service container.
+
+1. Clone the repo
+2. Rename `pg.env.example` to `pg.env` and change the user and password
+3. Rename `docker.env.example` to `docker.env` and change env variables inside it
+4. `docker compose up -d`
+
+### Locally
 
 1. Clone the repo
 2. Rename `.env.example` to `.env` and change env variables inside it
 3. Build tamako: `cargo build --release`
 4. Run tamako: `./target/release/tamako`
+
+### Docker
+
+Using docker directly is possible, but you have to configure the container yourself.
+
+```sh
+docker run -d --name tamako --restart unless-stopped -p 8715:8715 ghcr.io/fawni/tamako:latest
+```
 
 ## TUI
 
