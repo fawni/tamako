@@ -1,8 +1,8 @@
-name: Push latest image to ghcr
+name: Publish image to github container registery
 on:
-    push:
-        branches:
-            - master
+    # push:
+    #     branches:
+    #         - master
     workflow_dispatch:
 
 jobs:
