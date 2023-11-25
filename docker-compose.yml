@@ -3,8 +3,10 @@ services:
   db:
     image: postgres
     restart: unless-stopped
-    env_file:
-      - pg.env
+    environment:
+      POSTGRES_USER: user # change me
+      POSTGRES_PASSWORD: password # change me
+      POSTGRES_DB: tamako
     ports:
       - "5432"
     volumes:
@@ -14,11 +16,17 @@ services:
 
   web:
     image: ghcr.io/fawni/tamako
-    # build the image locally instead of pulling - dev
+    # build the image locally instead of pulling
     # build: .
     restart: unless-stopped
-    env_file:
-      - docker.env
+    environment:
+      TAMAKO_HOST: "0.0.0.0" # the host to run the server on.
+      TAMAKO_PORT: "8715" # the port to run the server on. make sure it's not already in use.
+      TAMAKO_SECRET: "" # IMPORTANT: the secret key used for authentication. think of it like a master password.
+      DATABASE_URL: "postgresql://user:password@db:5432/tamako" # the database url. for docker compose, change `user` and `password` to the variables set in `services.db.environment` above.
+      WEBHOOK_URL: "" # (optional) the discord webhook url. this will be used to send whispers (private and public) to a discord channel.
+      # TAMAKO_USER_NAME = "sofia" # (optional) defaults to "tamako". used in the web fronted header.
+      # TAMAKO_USER_DESCRIPTION = "stupidest kibty" # (optional) defaults to "Cozy anonymous whispers 🐞". used in the web fronted header.
     ports:
       - "8715:8715"
     depends_on:

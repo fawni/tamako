@@ -1,9 +1,9 @@
 name: Publish image to github container registery
 
 on:
-    push:
-        branches:
-            - "master"
+    # push:
+    #     branches:
+    #         - "master"
     workflow_dispatch:
 
 env:
@@ -17,7 +17,6 @@ jobs:
             matrix:
                 platform:
                     - linux/amd64
-                    - linux/arm/v7
                     - linux/arm64
         steps:
             - name: Checkout
