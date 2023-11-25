@@ -1,8 +1,8 @@
 package minimal
 
 import (
+	"codeberg.org/fawn/tamako/cmd/mochi/tui/styles"
 	lg "github.com/charmbracelet/lipgloss"
-	"github.com/fawni/tamako/cmd/mochi/tui/styles"
 )
 
 var (

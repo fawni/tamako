@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	"codeberg.org/fawn/tamako/cmd/mochi/tamako"
+	"codeberg.org/fawn/tamako/cmd/mochi/tui"
+	"codeberg.org/fawn/tamako/cmd/mochi/tui/minimal"
+	"codeberg.org/fawn/tamako/cmd/mochi/tui/styles"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/fawni/tamako/cmd/mochi/tamako"
-	"github.com/fawni/tamako/cmd/mochi/tui"
-	"github.com/fawni/tamako/cmd/mochi/tui/minimal"
-	"github.com/fawni/tamako/cmd/mochi/tui/styles"
 	"github.com/muesli/termenv"
 	"github.com/spf13/cobra"
 )

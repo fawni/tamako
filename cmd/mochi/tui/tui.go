@@ -3,13 +3,13 @@ package tui
 import (
 	"fmt"
 
+	"codeberg.org/fawn/tamako/cmd/mochi/tamako"
+	"codeberg.org/fawn/tamako/cmd/mochi/tui/keys"
+	"codeberg.org/fawn/tamako/cmd/mochi/tui/styles"
 	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/fawni/tamako/cmd/mochi/tamako"
-	"github.com/fawni/tamako/cmd/mochi/tui/keys"
-	"github.com/fawni/tamako/cmd/mochi/tui/styles"
 )
 
 type TUI struct {

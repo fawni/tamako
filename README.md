@@ -59,7 +59,7 @@ tamako comes with a pretty little tui frontend for it called mochi
 ### Installation
 
 ```sh
-go install github.com/fawni/tamako/cmd/mochi@latest
+go install codeberg.org/fawn/tamako/cmd/mochi@latest
 ```
 ### Usage
 
