@@ -1,3 +1,15 @@
+when:
+  branch: master
+  event: [push, manual]
+  path:
+    include:
+      - "Cargo.toml"
+      - "Dockerfile"
+      - "src/**/*.rs"
+      - "templates/**/*.html"
+      - "migrations/**/*.sql"
+      - ".sqlx/*"
+
 steps:
   publish:
     image: woodpeckerci/plugin-docker-buildx
@@ -13,12 +25,12 @@ steps:
         - registry: https://index.docker.io/v1/
           username: fawni
           password:
-            from_secret: DOCKER_TOKEN 
+            from_secret: DOCKER_TOKEN
         - registry: https://ghcr.io
           username: fawni
           password:
             from_secret: GITHUB_TOKEN
         - registry: https://codeberg.org
           username: fawn
-          password: 
+          password:
             from_secret: CODEBERG_TOKEN

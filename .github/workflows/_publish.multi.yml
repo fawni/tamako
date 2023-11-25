@@ -1,4 +1,4 @@
-name: Publish image to github container registery
+name: Publish multiplatform image to github container registery
 
 on:
     # push:
@@ -13,7 +13,6 @@ jobs:
     build:
         runs-on: ubuntu-latest
         strategy:
-            fail-fast: false
             matrix:
                 platform:
                     - linux/amd64
