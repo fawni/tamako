@@ -9,6 +9,11 @@ use crate::{
     db::Database,
 };
 
+#[get("/robots.txt")]
+pub async fn robots() -> impl Responder {
+    "User-agent: *\nDisallow: /"
+}
+
 /// User information for the instance
 pub struct User {
     /// The name of the user

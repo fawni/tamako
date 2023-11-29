@@ -26,6 +26,7 @@ async fn main() -> eyre::Result<()> {
             .wrap(Compress::default())
             .wrap(NormalizePath::new(TrailingSlash::Trim))
             .wrap(ErrorHandlers::new().handler(StatusCode::NOT_FOUND, templates::not_found))
+            .service(templates::robots)
             .service(templates::home)
             .service(templates::auth)
             .service(Files::new("/assets", "assets"))
