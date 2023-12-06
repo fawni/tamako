@@ -7,11 +7,6 @@ import (
 	"github.com/parnurzeal/gorequest"
 )
 
-const (
-// BASE_URL = "https://tamako.fawn.moe"
-// BASE_API = BASE_URL + "/api/whisper"
-)
-
 func baseApi(baseUrl string) string {
 	return baseUrl + "/api/whisper"
 }
@@ -32,9 +27,13 @@ func Get(baseUrl string, id int64) (Whisper, error) {
 	req := gorequest.New()
 	var whisper Whisper
 
-	_, body, errs := req.Get(fmt.Sprintf("%s/%d?pretty=true", baseApi(baseUrl), id)).End()
+	res, body, errs := req.Get(fmt.Sprintf("%s/%d?pretty=true", baseApi(baseUrl), id)).End()
 	if errs != nil {
 		return Whisper{}, errs[0]
+	}
+
+	if res.StatusCode != 200 {
+		return Whisper{}, fmt.Errorf("Request unsuccessful: %s", res.Status)
 	}
 
 	if err := json.Unmarshal([]byte(body), &whisper); err != nil {
@@ -57,9 +56,13 @@ func List(baseUrl string, limit int) ([]Whisper, error) {
 		url = fmt.Sprintf("%s&limit=%d", url, limit)
 	}
 
-	_, body, errs := req.Get(url).End()
+	res, body, errs := req.Get(url).End()
 	if errs != nil {
 		return []Whisper{}, errs[0]
+	}
+
+	if res.StatusCode != 200 {
+		return []Whisper{}, fmt.Errorf("Request unsuccessful: %s", res.Status)
 	}
 
 	if err := json.Unmarshal([]byte(body), &whispers); err != nil {
