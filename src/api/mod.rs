@@ -1,6 +1,6 @@
 use actix_web::{
     delete,
-    error::{ErrorBadRequest, ErrorForbidden, ErrorNotFound},
+    error::{ErrorBadRequest, ErrorForbidden, ErrorInternalServerError, ErrorNotFound},
     get, post, web, HttpRequest, HttpResponse,
 };
 use chrono::{DateTime, Utc};
@@ -159,7 +159,7 @@ pub async fn add(
 
 #[derive(Deserialize, Default)]
 #[serde(default)]
-/// Query params for the list endpoint
+/// Query params for the list method
 pub struct ListParams {
     /// The number of whispers to return
     limit: Option<usize>,
@@ -208,14 +208,35 @@ pub async fn list(
     Ok(HttpResponse::Ok().json(whispers))
 }
 
+#[derive(Deserialize, Default)]
+#[serde(default)]
+/// Query params for the get method
+pub struct GetParams {
+    /// Whether to return pretty timestamps or not
+    pretty: Option<bool>,
+}
+
 /// Gets a whisper by its snowflake
 #[get("/api/whisper/{snowflake}")]
 pub async fn get(
     path: web::Path<i64>,
+    params: web::Query<GetParams>,
     database: web::Data<Database>,
-) -> Result<HttpResponse, Box<dyn std::error::Error>> {
+) -> actix_web::Result<HttpResponse> {
     let snowflake = path.into_inner();
-    let whisper = database.get(snowflake).await?;
+    let mut whisper = database.get(snowflake).await.map_err(|e| {
+        log::warn!("Database Error: {} [{0:?}]", e);
+        if let sqlx::Error::RowNotFound = e {
+            ErrorNotFound("Invalid Whisper ID")
+        } else {
+            ErrorInternalServerError(e)
+        }
+    })?;
+
+    // Convert the whispers' timestamps to pretty timestamps if the `pretty` param is provided
+    if params.pretty == Some(true) {
+        whisper.timestamp = whisper.pretty_timestamp();
+    }
 
     Ok(HttpResponse::Ok().json(whisper))
 }
