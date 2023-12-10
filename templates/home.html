@@ -82,25 +82,27 @@
 
 <div id="whispers">
     {% if whispers.len() == 0 %}
-        <div class="placeholder muted">you've met with a terrible fate, haven't you?</div>
+    <div class="placeholder muted">you've met with a terrible fate, haven't you?</div>
     {% else %}
-        <ul>
-            {% for whisper in whispers %}
-                {% let name = whisper.name.clone().unwrap_or("anon".to_owned()) %}
-
-                {% if whisper.private %}
-                    <li class="private">
-                {% else %}
-                    <li>
-                {% endif %}
-                        <b class="whisperer">{{name~}}</b>: {{~whisper.message~}} <span class="timestamp muted"
-                            title="{{whisper.snowflake}}"
-                            onclick="copySnowflake('{{whisper.snowflake}}')"
-                            oncontextmenu="deleteWhisper('{{whisper.snowflake}}'); return false;">
-                            {{whisper.pretty_timestamp()}}
-                        </span>
-                    </li>
-            {% endfor %}
+    <ul>
+    {% for whisper in whispers %}
+    {% let name = whisper.name.clone().unwrap_or("anon".to_owned()) %}
+    {% if whisper.private %}
+        <li class="private">
+    {% else %}
+        <li>
+    {% endif %}
+            <span
+                class="timestamp muted"
+                title="{{whisper.snowflake}}"
+                onclick="copySnowflake('{{whisper.snowflake}}')"
+                oncontextmenu="deleteWhisper('{{whisper.snowflake}}'); return false;"
+            >
+                {{whisper.pretty_timestamp()}}
+            </span>
+            <b class="whisperer">{{name~}}</b>: {{~whisper.message~}}
+        </li>
+    {% endfor %}
         </ul>
     {% endif %}
 </div>
