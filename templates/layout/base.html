@@ -20,13 +20,18 @@
     <link rel="preconnect" href="https://unpkg.com">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" >
-    <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-vader.css">
     <link rel="stylesheet" href="https://unpkg.com/@csstools/normalize.css" />
-    <link rel="stylesheet" href="https://unpkg.com/notyf/notyf.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-vader.css">
+    <link rel="stylesheet" href="https://unpkg.com/@twinking/macaron/src/macaron.css">
 
-    <script src="https://unpkg.com/notyf/notyf.min.js"></script>
+    <script src="https://unpkg.com/@twinking/macaron/dist/macaron.js" type="text/javascript"></script>
 
     <style>
+        :root{
+            --macaron-bg: #40363a;
+            --macaron-fg: #d9d8dc;
+        }
+
         ::selection {
             background-color: #eb99a1;
             color: #d9d8dc;
@@ -141,18 +146,6 @@
     <div id="mascot">
         <img src="/assets/mascot.png" alt="tamako mascot" />
     </div>
-
-    <script type="application/javascript">
-        var notyf = new Notyf({
-            duration: 2500,
-            position: {
-                x: 'right',
-                y: 'top',
-            },
-            ripple: false,
-            dismissible: true,
-        });
-    </script>
 </body>
 
 </html>

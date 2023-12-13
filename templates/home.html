@@ -22,20 +22,19 @@
         });
 
         if (res.status == 201) {
-            notyf.success("whisper sent");
-            window.location.reload();
+            macaron.success("whisper sent! click to reload", {action: () => window.location.reload()});
         }
         else if (res.status == 429) {
-            notyf.error("too many whispers, slow down");
+            macaron.error("too many whispers, slow down");
         }
         else {
-            notyf.error(await res.text());
+            macaron.error(await res.text());
         }
     };
 
     const copySnowflake = (snowflake) => {
         navigator.clipboard.writeText(snowflake);
-        notyf.success("copied whisper id");
+        macaron.success("copied whisper id");
     };
 
     const deleteWhisper = async (snowflake) => {
@@ -53,7 +52,7 @@
             window.location.reload();
         }
         else {
-            notyf.error(await res.text());
+            macaron.error(await res.text());
         }
     };
 </script>
