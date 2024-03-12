@@ -3,4 +3,4 @@ steps:
     image: golangci/golangci-lint
     directory: cmd/mochi
     commands:
-      - golangci-lint run -v
+      - golangci-lint run -v --timeout 5m
