@@ -1,4 +1,4 @@
-FROM rust:1.74 AS builder
+FROM rust:1.80 AS builder
 WORKDIR /usr/src/tamako
 COPY . .
 RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
