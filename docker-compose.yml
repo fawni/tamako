@@ -13,8 +13,8 @@ services:
     networks:
       - tamako
   web:
-    # image: fawni/tamako # or ghcr.io/fawni/tamako or codeberg.org/fawn/tamako
-    build: . # uncomment to build the image locally instead of pulling from a registery
+    image: fawni/tamako # or ghcr.io/fawni/tamako or codeberg.org/fawn/tamako
+    # build: . # uncomment to build the image locally instead of pulling from a registery
     restart: unless-stopped
     environment:
       TAMAKO_HOST: 0.0.0.0 # the host to run the server on.
