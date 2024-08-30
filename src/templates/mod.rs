@@ -2,7 +2,7 @@ use actix_web::{
     dev::ServiceResponse, get, middleware::ErrorHandlerResponse, web, HttpRequest, HttpResponse,
     Responder,
 };
-use askama::Template;
+use rinja::Template;
 
 use crate::{
     api::{Private, Whisper},

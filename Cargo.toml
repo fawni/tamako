@@ -8,21 +8,21 @@ license = "OSL-3.0"
 edition = "2021"
 
 [dependencies]
-tokio = { version = "1.38.0", features = ["full"] }
+tokio = { version = "1.39.3", features = ["full"] }
 
-actix-web = "4.6.0"
-actix-files = "0.6.5"
+actix-web = "4.9.0"
+actix-files = "0.6.6"
 actix-governor = "0.5.0"
 actix-logger = "0.4.1"
 
-askama = { version = "0.12.1", features = ["with-actix-web"] }
-askama_actix = "0.14.0"
+rinja = { version = "0.3.2", features = ["with-actix-web"] }
+rinja_actix = "0.3.2"
 
-sqlx = { version = "0.7.4", features = ["postgres", "runtime-tokio-rustls"] }
+sqlx = { version = "0.8.1", features = ["postgres", "runtime-tokio-rustls"] }
 
-serde = { version = "1.0.203", features = ["derive"] }
+serde = { version = "1.0.209", features = ["derive"] }
 twink = { version = "1.1.3", features = ["12-hour", "log"] }
-log = "0.4.21"
+log = "0.4.22"
 eyre = { version = "0.6.12" }
 dotenvy = "0.15.7"
 
