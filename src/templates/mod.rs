@@ -40,19 +40,15 @@ pub struct WhispersTemplate {
     /// The whispers to be rendered
     pub whispers: Vec<Whisper>,
 
-    /// Whether the user is authenticated or not
-    pub authenticated: bool,
-
     /// The user of the instance
     pub user: User,
 }
 
 impl WhispersTemplate {
     /// Returns a new template with the given whispers
-    pub fn new(whispers: Vec<Whisper>, authenticated: bool) -> Self {
+    pub fn new(whispers: Vec<Whisper>) -> Self {
         Self {
             whispers,
-            authenticated,
             user: User::default(),
         }
     }
@@ -64,9 +60,8 @@ pub async fn home(
     req: HttpRequest,
     database: web::Data<Database>,
 ) -> Result<impl Responder, Box<dyn std::error::Error>> {
-    let authenticated = crate::auth::validate_cookie(&req);
     // If the user is authenticated, show all whispers, otherwise only show public whispers.
-    let whispers = if authenticated {
+    let whispers = if crate::auth::validate_cookie(&req) {
         database.list().await?
     } else {
         database.list().await?.filter()
@@ -75,7 +70,7 @@ pub async fn home(
     .rev()
     .collect::<Vec<Whisper>>();
 
-    Ok(WhispersTemplate::new(whispers, authenticated))
+    Ok(WhispersTemplate::new(whispers))
 }
 
 /// The template that renders the auth page
