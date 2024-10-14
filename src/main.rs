@@ -38,7 +38,7 @@ async fn main() -> eyre::Result<()> {
                     .route(web::post().to(api::add))
                     .wrap(Governor::new(
                         &GovernorConfigBuilder::default()
-                            .per_second(360)
+                            .requests_per_second(360)
                             .burst_size(2)
                             .finish()
                             .unwrap_or_default(),
