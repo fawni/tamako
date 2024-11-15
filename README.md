@@ -6,7 +6,7 @@
 
 tamako is a cozy, minimalistic, single-user, _anonymous_ whispers service
 
-![scrot](meta/scrot.png)
+![scrot](.meta/scrot.png)
 
 ## Prerequisites
 
@@ -54,7 +54,7 @@ docker run -d --name tamako --restart unless-stopped -p 8715:8715 fawni/tamako:l
 
 tamako comes with a pretty little tui frontend for it called mochi
 
-![mochi](meta/mochi.png)
+![mochi](.meta/mochi.png)
 
 ### Installation
 
