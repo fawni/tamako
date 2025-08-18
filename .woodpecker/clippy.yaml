@@ -1,7 +1,8 @@
 steps:
   clippy:
     image: rust
-    environment: [CARGO_TERM_COLOR=always]
+    environment:
+      CARGO_TERM_COLOR: always
     commands:
       - rustup component add clippy
       - cargo clippy --verbose --all --locked -- -D warnings
