@@ -30,7 +30,7 @@ pub static PORT: Lazy<u16> = Lazy::new(|| {
 static SNOWFLAKE: Lazy<Snowflake> = Lazy::new(Snowflake::new);
 
 macro_rules! bail {
-    ($e:expr) => {
+    ($e:expr_2021) => {
         return Err($e);
     };
 }

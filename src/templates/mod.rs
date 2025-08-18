@@ -2,7 +2,8 @@ use actix_web::{
     dev::ServiceResponse, get, middleware::ErrorHandlerResponse, web, HttpRequest, HttpResponse,
     Responder,
 };
-use rinja::Template;
+use askama::Template;
+use askama_web::WebTemplate;
 
 use crate::{
     api::{Private, Whisper},
@@ -34,7 +35,7 @@ impl Default for User {
 }
 
 /// The template that renders the whispers page
-#[derive(Template)]
+#[derive(Template, WebTemplate)]
 #[template(path = "home.html")]
 pub struct WhispersTemplate {
     /// The whispers to be rendered
@@ -74,7 +75,7 @@ pub async fn home(
 }
 
 /// The template that renders the auth page
-#[derive(Template)]
+#[derive(Template, WebTemplate)]
 #[template(path = "auth.html")]
 pub struct AuthTemplate {
     /// The user of the instance

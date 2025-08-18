@@ -33,7 +33,7 @@ func Get(baseUrl string, id int64) (Whisper, error) {
 	}
 
 	if res.StatusCode != 200 {
-		return Whisper{}, fmt.Errorf("Request unsuccessful: %s", res.Status)
+		return Whisper{}, fmt.Errorf("request unsuccessful: %s", res.Status)
 	}
 
 	if err := json.Unmarshal([]byte(body), &whisper); err != nil {
@@ -62,7 +62,7 @@ func List(baseUrl string, limit int) ([]Whisper, error) {
 	}
 
 	if res.StatusCode != 200 {
-		return []Whisper{}, fmt.Errorf("Request unsuccessful: %s", res.Status)
+		return []Whisper{}, fmt.Errorf("request unsuccessful: %s", res.Status)
 	}
 
 	if err := json.Unmarshal([]byte(body), &whispers); err != nil {
