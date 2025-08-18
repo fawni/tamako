@@ -11,12 +11,12 @@ pub fn validate(secret: &str) -> bool {
 /// Validates the cookie of the given request
 pub fn validate_cookie(req: &actix_web::HttpRequest) -> bool {
     req.cookie("token")
-        .map_or(false, |cookie| validate(cookie.value()))
+        .is_some_and(|cookie| validate(cookie.value()))
 }
 
 /// Validates the header of the given request
 pub fn validate_header(req: &actix_web::HttpRequest) -> bool {
     req.headers()
         .get("token")
-        .map_or(false, |header| validate(header.to_str().unwrap()))
+        .is_some_and(|header| validate(header.to_str().unwrap()))
 }

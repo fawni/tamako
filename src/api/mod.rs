@@ -59,12 +59,19 @@ pub struct Whisper {
 
 impl Whisper {
     /// Preforms basic validation checks for the whisper
-    fn validate(&mut self) -> actix_web::Result<()> {
+    fn validate(&mut self, req: &HttpRequest) -> actix_web::Result<()> {
         self.name = self.name.take().filter(|name| !name.is_empty());
         if self.message.is_empty() {
             bail!(ErrorBadRequest("whispers cannot be empty"));
         }
         if let Some(name) = &self.name {
+            if name.eq_ignore_ascii_case(
+                &std::env::var("TAMAKO_RESERVED_NAME").unwrap_or("fawn".to_owned()),
+            ) && !auth::validate_header(req)
+            {
+                bail!(ErrorBadRequest("bad girl! use a different name"));
+            }
+
             if name.len() > 32 {
                 bail!(ErrorBadRequest("name cannot be longer than 32 characters"));
             }
@@ -143,10 +150,11 @@ pub async fn authentication(req: HttpRequest) -> actix_web::Result<HttpResponse>
 
 /// Adds a new whisper
 pub async fn add(
+    req: HttpRequest,
     database: web::Data<Database>,
     mut whisper: web::Json<Whisper>,
 ) -> Result<HttpResponse, Box<dyn std::error::Error>> {
-    whisper.validate()?;
+    whisper.validate(&req)?;
 
     database.add(&whisper).await?;
     match webhook::send(&whisper).await {
