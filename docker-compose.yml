@@ -22,8 +22,9 @@ services:
       TAMAKO_SECRET: "" # IMPORTANT: the secret key used for authentication. think of it like a master password.
       DATABASE_URL: postgresql://user:password@db:5432/tamako # the database url. for docker compose, change `user` and `password` to the variables set in `services.db.environment` above.
       WEBHOOK_URL: "" # (optional) the discord webhook url. this will be used to send whispers (private and public) to a discord channel.
-      # TAMAKO_USER_NAME = "sofia" # (optional) defaults to "tamako". used in the web fronted header.
-      # TAMAKO_USER_DESCRIPTION = "stupidest kibty" # (optional) defaults to "Cozy anonymous whispers 🐞". used in the web fronted header.
+      # TAMAKO_USER_NAME: "sofia" # (optional) defaults to "tamako". used in the web fronted header.
+      # TAMAKO_USER_DESCRIPTION: "stupidest kibty" # (optional) defaults to "Cozy anonymous whispers 🐞". used in the web fronted header.
+      # TAMAKO_RESERVED_NAME: "fawn" # (optional) defaults to "fawn". used to reserve a name for authed user only when sending whispers.
     ports:
       - 8715:8715
     depends_on:
